@@ -143,7 +143,8 @@ export function ResearchForm() {
             />
 
             <div>
-              <FormLabel>Contextual Links (Optional)</FormLabel>
+              <FormLabel>Reference Links (Optional)</FormLabel>
+              <p className="text-sm text-muted-foreground">Provide URLs for the AI to use as context.</p>
               <div className="mt-2 space-y-3">
                 {fields.map((field, index) => (
                   <FormField
@@ -164,7 +165,7 @@ export function ResearchForm() {
                             variant="ghost"
                             size="icon"
                             onClick={() => remove(index)}
-                            disabled={fields.length <= 1 && form.getValues(`inputLinks.${index}.value`) === ""}
+                            disabled={fields.length <= 1}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -182,7 +183,7 @@ export function ResearchForm() {
                 className="mt-3"
                 onClick={() => append({ value: "" })}
               >
-                <Plus className="mr-2 h-4 w-4" /> Add Link
+                <Plus className="mr-2 h-4 w-4" /> Add Another Link
               </Button>
             </div>
 

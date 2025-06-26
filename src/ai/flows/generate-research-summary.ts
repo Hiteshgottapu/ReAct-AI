@@ -45,7 +45,7 @@ const generateResearchSummaryPrompt = ai.definePrompt({
   Query: {{{queryText}}}
 
   {{#if inputLinks}}
-  The following URLs are provided as context:
+  The following URLs are provided as context. If you use any of them as a source, please include them in the 'sources' part of your output.
   {{#each inputLinks}}
   - {{{this}}}
   {{/each}}

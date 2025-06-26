@@ -2,7 +2,7 @@
 
 import { notFound } from "next/navigation"
 import {
-  BookMark,
+  BookMarked,
   Check,
   Clipboard,
   Info,
@@ -128,7 +128,7 @@ ${result.aiResponse.sources?.map(source => `- ${source.title}: ${source.url}`).j
             </h1>
             <div className="flex items-center gap-2">
                 <Button variant={isBookmarked ? "secondary" : "outline"} size="sm" onClick={toggleBookmark}>
-                    <BookMark className="mr-2 h-4 w-4" />
+                    <BookMarked className="mr-2 h-4 w-4" />
                     {isBookmarked ? "Bookmarked" : "Bookmark"}
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => copyToClipboard(fullText)}>

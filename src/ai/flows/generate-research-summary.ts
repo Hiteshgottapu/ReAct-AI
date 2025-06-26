@@ -24,7 +24,7 @@ const GenerateResearchSummaryOutputSchema = z.object({
   conclusion: z.string().describe('Summarizing statement.'),
   sources: z.array(
     z.object({
-      url: z.string().url().describe('URL of the source.'),
+      url: z.string().describe('URL of the source.'),
       title: z.string().describe('Title of the source.'),
     })
   ).optional().describe('URLs and their titles that contributed significantly to the summary.'),

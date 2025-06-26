@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { BookMarked, Home, Search, Settings, User, Loader2 } from "lucide-react"
+import { BookMarked, Home, Settings, User, Loader2, BrainCircuit } from "lucide-react"
 import { useEffect } from "react"
 import { useAuth } from "@/hooks/use-auth"
 import { ResearchHistoryProvider } from "@/components/research-history-provider"
@@ -59,9 +59,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <Sidebar className="border-r">
             <SidebarHeader>
               <div className="flex items-center gap-2 p-2">
-                  <Search className="h-6 w-6 text-primary" />
+                  <BrainCircuit className="h-6 w-6 text-primary" />
                   <h1 className="text-lg font-bold group-data-[collapsible=icon]:hidden">
-                      Contextual Insights
+                      ReAct
                   </h1>
               </div>
             </SidebarHeader>

@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/components/auth-provider";
 
 export const metadata: Metadata = {
-  title: "Contextual Insights",
+  title: "ReAct",
   description: "Your personal AI research assistant.",
 };
 

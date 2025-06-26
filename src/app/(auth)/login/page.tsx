@@ -106,8 +106,8 @@ export default function LoginPage() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold">Contextual Insights</CardTitle>
-        <CardDescription>Welcome back! Please sign in to your account.</CardDescription>
+        <CardTitle className="text-2xl font-bold">ReAct</CardTitle>
+        <CardDescription>Welcome back! Sign in to continue.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

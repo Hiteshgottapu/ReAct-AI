@@ -22,12 +22,16 @@ const GenerateResearchSummaryOutputSchema = z.object({
   introduction: z.string().describe('Brief overview of the research topic.'),
   keyInsights: z.array(z.string()).describe('Bulleted key takeaways/findings (min 3, max 7).'),
   conclusion: z.string().describe('Summarizing statement.'),
-  sources: z.array(
-    z.object({
-      url: z.string().describe('URL of the source.'),
-      title: z.string().describe('Title of the source.'),
-    })
-  ).optional().describe('URLs and their titles that contributed significantly to the summary.'),
+  sources: z
+    .array(
+      z.object({
+        url: z.string().describe('URL of the source.'),
+        title: z.string().describe('Title of the source.'),
+      })
+    )
+    .optional()
+    .describe('URLs and their titles that contributed significantly to the summary.'),
+  tags: z.array(z.string()).describe('A list of 3-5 relevant tags or keywords for the research topic.'),
   disclaimer: z.string().optional().describe('A small note about AI-generated content.'),
 });
 export type GenerateResearchSummaryOutput = z.infer<typeof GenerateResearchSummaryOutputSchema>;
@@ -58,10 +62,12 @@ const generateResearchSummaryPrompt = ai.definePrompt({
     "keyInsights": ["Bulleted key takeaway 1", "Bulleted key takeaway 2", "Bulleted key takeaway 3"],
     "conclusion": "Summarizing statement",
     "sources": [{"url": "URL of the source", "title": "Title of the source"}],
+    "tags": ["keyword1", "keyword2", "keyword3"],
     "disclaimer": "Optional disclaimer about AI-generated content"
   }
 
   Ensure the keyInsights array contains between 3 and 7 bullet points.
+  The 'tags' field should contain 3-5 relevant keywords.
   `,
 });
 

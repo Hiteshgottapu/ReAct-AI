@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link";
-import { ArrowRight, BookMarked, Clock, Loader2 } from "lucide-react";
+import { ArrowRight, BookMarked, Clock, Loader2, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,8 +23,8 @@ export default function DashboardPage() {
   return (
     <div className="container mx-auto max-w-5xl space-y-12 py-8">
       <section className="text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-primary md:text-5xl">
-          Unlock Insights Instantly
+        <h1 className="bg-gradient-to-r from-primary to-violet-400 bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
+          ReAct to Information
         </h1>
         <p className="mt-4 text-lg text-muted-foreground md:text-xl">
           Your personal AI research assistant. Just ask, and we&apos;ll dive deep.
@@ -53,7 +53,14 @@ export default function DashboardPage() {
             {recentResearch.map((item) => (
               <Card key={item.researchId} className="flex flex-col">
                 <CardHeader>
-                  <CardTitle className="line-clamp-2">{item.aiResponse.title}</CardTitle>
+                  {item.aiResponse.tags && item.aiResponse.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {item.aiResponse.tags.slice(0, 3).map((tag) => (
+                        <Badge key={tag} variant="outline">{tag}</Badge>
+                      ))}
+                    </div>
+                  )}
+                  <CardTitle className="line-clamp-2 pt-2">{item.aiResponse.title}</CardTitle>
                   <CardDescription className="flex items-center gap-2 pt-2 text-sm">
                     <Clock className="h-4 w-4" />
                     <span>{item.timestamp.toLocaleDateString()}</span>
@@ -76,8 +83,13 @@ export default function DashboardPage() {
         ) : (
           <Card>
             <CardContent className="py-10 text-center">
-              <p className="text-muted-foreground">You have no recent research.</p>
-              <p className="text-muted-foreground">Start a new one above to see it here.</p>
+              <div className="mb-4 flex justify-center">
+                <div className="rounded-full bg-secondary p-3">
+                  <Search className="h-6 w-6 text-muted-foreground" />
+                </div>
+              </div>
+              <p className="font-semibold">No Research Yet</p>
+              <p className="text-sm text-muted-foreground">Start a new research query to see your results here.</p>
             </CardContent>
           </Card>
         )}

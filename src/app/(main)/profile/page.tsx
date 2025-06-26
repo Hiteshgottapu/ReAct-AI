@@ -127,12 +127,13 @@ function ResearchHistoryList() {
                        </div>
                     ) : filteredHistory.length > 0 ? filteredHistory.map(item => (
                         <div key={item.researchId} className="flex items-center justify-between rounded-lg border p-4">
-                            <div className="space-y-1">
+                            <div className="space-y-2">
                                 <Link href={`/result/${item.researchId}`} className="font-medium hover:underline">{item.aiResponse.title}</Link>
                                 <p className="line-clamp-1 text-sm text-muted-foreground">{item.queryText}</p>
-                                <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                                    <span className="flex items-center gap-1.5"><Clock className="h-3 w-3" /> {item.timestamp.toLocaleDateString()}</span>
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground"><Clock className="h-3 w-3" /> {item.timestamp.toLocaleDateString()}</span>
                                     {item.isBookmarked && <Badge variant="secondary" className="gap-1.5 pl-1.5"><BookMarked className="h-3 w-3" /> Bookmarked</Badge>}
+                                    {item.aiResponse.tags?.slice(0, 3).map(tag => <Badge key={tag} variant="outline">{tag}</Badge>)}
                                 </div>
                             </div>
                             <Button variant="ghost" size="icon" asChild>

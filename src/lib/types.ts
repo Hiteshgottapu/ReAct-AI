@@ -10,6 +10,7 @@ export interface ResearchResult {
     keyInsights: string[];
     conclusion: string;
     sources?: { url: string; title: string }[];
+    tags: string[];
     disclaimer?: string;
   };
   isBookmarked: boolean;

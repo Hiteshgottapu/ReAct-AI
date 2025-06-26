@@ -13,6 +13,7 @@ import {
   Target,
 } from "lucide-react"
 import { useState } from "react"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -54,8 +55,8 @@ function Feedback({ researchId }: { researchId: string }) {
             <svg
               className={`h-6 w-6 transition-colors ${
                 starRating <= (hoverRating || rating)
-                  ? 'text-yellow-400'
-                  : 'text-gray-300'
+                  ? 'text-primary'
+                  : 'text-gray-300 dark:text-gray-600'
               }`}
               fill="currentColor"
               viewBox="0 0 20 20"
@@ -136,9 +137,18 @@ ${result.aiResponse.sources?.map(source => `- ${source.title}: ${source.url}`).j
           Research for: "{result.queryText}"
         </p>
         <div className="flex flex-wrap items-start justify-between gap-4">
-            <h1 className="text-4xl font-bold tracking-tight text-primary">
-                {result.aiResponse.title}
-            </h1>
+            <div className="flex-1 space-y-2">
+                <h1 className="text-4xl font-bold tracking-tight text-primary">
+                    {result.aiResponse.title}
+                </h1>
+                {result.aiResponse.tags && result.aiResponse.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {result.aiResponse.tags.map((tag) => (
+                      <Badge key={tag} variant="secondary">{tag}</Badge>
+                    ))}
+                  </div>
+                )}
+            </div>
             <div className="flex items-center gap-2">
                 <Button variant={result.isBookmarked ? "secondary" : "outline"} size="sm" onClick={handleToggleBookmark}>
                     <BookMarked className="mr-2 h-4 w-4" />

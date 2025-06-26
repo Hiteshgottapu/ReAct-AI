@@ -1,7 +1,11 @@
 "use client"
 
 import Link from "next/link"
-import { LogOut, Settings, User } from "lucide-react"
+import { LogOut, Settings, User as UserIcon } from "lucide-react"
+import { signOut } from "firebase/auth"
+import { auth } from "@/lib/firebase"
+import { useAuth } from "@/hooks/use-auth"
+import { useRouter } from "next/navigation"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -14,21 +18,36 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { mockUser } from "@/lib/mock-data"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export function UserNav() {
-  const user = mockUser;
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    router.push('/login');
+  };
+
+  if (loading) {
+    return <Skeleton className="h-9 w-9 rounded-full" />
+  }
+
+  if (!user) {
+    return null
+  }
+
   const initials = user.displayName
-    .split(" ")
+    ?.split(" ")
     .map((n) => n[0])
-    .join("")
+    .join("") || user.email?.charAt(0).toUpperCase() || "U";
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-9 w-9">
-            <AvatarImage src="https://placehold.co/40x40.png" alt={`@${user.displayName}`} data-ai-hint="avatar person" />
+            <AvatarImage src={user.photoURL || `https://placehold.co/40x40.png`} alt={`@${user.displayName}`} data-ai-hint="avatar person" />
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
         </Button>
@@ -46,7 +65,7 @@ export function UserNav() {
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
             <Link href="/profile">
-              <User className="mr-2 h-4 w-4" />
+              <UserIcon className="mr-2 h-4 w-4" />
               <span>Profile</span>
             </Link>
           </DropdownMenuItem>
@@ -58,11 +77,9 @@ export function UserNav() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/login">
+        <DropdownMenuItem onClick={handleLogout}>
             <LogOut className="mr-2 h-4 w-4" />
             <span>Log out</span>
-          </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

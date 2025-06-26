@@ -1,8 +1,10 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { BookMarked, Home, Search, Settings, User } from "lucide-react"
+import { usePathname, useRouter } from "next/navigation"
+import { BookMarked, Home, Search, Settings, User, Loader2 } from "lucide-react"
+import { useEffect } from "react"
+import { useAuth } from "@/hooks/use-auth"
 
 import {
   SidebarProvider,
@@ -20,6 +22,14 @@ import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const router = useRouter()
+  const { user, loading } = useAuth()
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login')
+    }
+  }, [user, loading, router])
 
   const isActive = (path: string) => {
     if (path === '/') return pathname === '/'
@@ -31,6 +41,14 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     if (path.startsWith("/result")) return "Research Result";
     const segment = path.split('/')[1];
     return segment.charAt(0).toUpperCase() + segment.slice(1);
+  }
+  
+  if (loading || !user) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
   }
 
   return (

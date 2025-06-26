@@ -27,9 +27,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { generateResearchSummary } from "@/ai/flows/generate-research-summary"
 import { useRouter } from "next/navigation"
-import { mockUser } from "@/lib/mock-data"
 import type { ResearchResult } from "@/lib/types"
 import { useResearchHistory } from "@/hooks/use-research-history"
+import { useAuth } from "@/hooks/use-auth"
 
 const researchSchema = z.object({
   queryText: z.string().min(10, "Please enter a more detailed research topic."),
@@ -45,6 +45,7 @@ export function ResearchForm() {
   const { toast } = useToast()
   const router = useRouter()
   const { addResearchResult } = useResearchHistory();
+  const { user } = useAuth();
   
   const form = useForm<z.infer<typeof researchSchema>>({
     resolver: zodResolver(researchSchema),
@@ -60,6 +61,15 @@ export function ResearchForm() {
   })
 
   async function onSubmit(values: z.infer<typeof researchSchema>) {
+    if (!user) {
+      toast({
+        variant: "destructive",
+        title: "Authentication Required",
+        description: "Please sign in to start a new research.",
+      });
+      return;
+    }
+    
     setIsLoading(true)
     try {
       const filteredLinks = values.inputLinks
@@ -71,27 +81,25 @@ export function ResearchForm() {
         inputLinks: filteredLinks.length > 0 ? filteredLinks : undefined,
       })
 
-      const newResearchId = `res-${Date.now()}`
-      const newResearchResult: ResearchResult = {
-        researchId: newResearchId,
-        userId: mockUser.uid,
-        timestamp: new Date(),
+      const newResearchResult: Omit<ResearchResult, 'researchId' | 'timestamp' | 'userId'> = {
         queryText: values.queryText,
         inputLinks: filteredLinks,
         aiResponse: result,
         isBookmarked: false,
       }
 
-      addResearchResult(newResearchResult);
+      const newResearchId = await addResearchResult(newResearchResult);
 
-      toast({
-        title: "Research Generated!",
-        description: `Redirecting to summary: "${result.title}"`,
-      })
+      if (newResearchId) {
+        toast({
+          title: "Research Generated!",
+          description: `Redirecting to summary: "${result.title}"`,
+        })
 
-      form.reset();
-      
-      router.push(`/result/${newResearchId}`)
+        form.reset();
+        
+        router.push(`/result/${newResearchId}`)
+      }
 
     } catch (error) {
       console.error("Error generating research:", error)

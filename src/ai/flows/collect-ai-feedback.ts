@@ -34,10 +34,10 @@ const collectAiFeedbackFlow = ai.defineFlow(
     outputSchema: CollectAiFeedbackOutputSchema,
   },
   async input => {
-    // TODO: Implement the logic to store the feedback in Firestore or another database.
-    // For now, just return a success status.
+    // This flow is now a no-op as feedback is handled on the client-side directly with Firestore.
+    // This file is kept to avoid breaking genkit deployments that might still reference it.
     console.log(
-      `Collecting AI feedback for researchId: ${input.researchId}, userId: ${input.userId}, feedbackScore: ${input.feedbackScore}`
+      `Received AI feedback for researchId: ${input.researchId}, userId: ${input.userId}, feedbackScore: ${input.feedbackScore}. This is a no-op.`
     );
     return {success: true};
   }

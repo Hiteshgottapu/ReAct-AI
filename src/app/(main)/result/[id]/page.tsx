@@ -1,6 +1,6 @@
 "use client"
 
-import { notFound, useParams } from "next/navigation"
+import { useParams } from "next/navigation"
 import {
   BookMarked,
   Check,
@@ -8,15 +8,14 @@ import {
   Info,
   Lightbulb,
   Link as LinkIcon,
+  Loader2,
   MessageSquareQuote,
   Target,
 } from "lucide-react"
 import { useState } from "react"
-import { collectAiFeedback } from "@/ai/flows/collect-ai-feedback"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { mockUser } from "@/lib/mock-data"
 import { useToast } from "@/hooks/use-toast"
 import { useResearchHistory } from "@/hooks/use-research-history"
 
@@ -25,15 +24,12 @@ function Feedback({ researchId }: { researchId: string }) {
   const [hoverRating, setHoverRating] = useState(0)
   const [submitted, setSubmitted] = useState(false)
   const { toast } = useToast()
+  const { updateFeedbackScore } = useResearchHistory();
 
   const handleRating = async (rate: number) => {
     setRating(rate)
     try {
-      await collectAiFeedback({
-        researchId: researchId,
-        userId: mockUser.uid,
-        feedbackScore: rate
-      });
+      await updateFeedbackScore(researchId, rate);
       setSubmitted(true)
       toast({ title: "Feedback submitted!", description: "Thank you for helping us improve." })
     } catch (error) {
@@ -77,17 +73,27 @@ function Feedback({ researchId }: { researchId: string }) {
 export default function ResultPage() {
   const params = useParams<{ id: string }>()
   const { toast } = useToast()
-  const { getResearchById, toggleBookmark: toggleHistoryBookmark } = useResearchHistory();
+  const { getResearchById, toggleBookmark, loading } = useResearchHistory();
   const result = getResearchById(params.id)
 
+  if (loading) {
+    return (
+        <div className="mx-auto max-w-4xl flex justify-center items-center py-10">
+            <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+    )
+  }
+
   if (!result) {
-    // A simple loading state while the history is being loaded from sessionStorage.
     return (
         <div className="mx-auto max-w-4xl space-y-8">
             <Card>
                 <CardHeader>
-                    <CardTitle>Loading research result...</CardTitle>
+                    <CardTitle>Research Result Not Found</CardTitle>
                 </CardHeader>
+                <CardContent>
+                  <p>The research you are looking for does not exist or you may not have permission to view it.</p>
+                </CardContent>
             </Card>
         </div>
     )
@@ -100,8 +106,8 @@ export default function ResultPage() {
     });
   };
   
-  const toggleBookmark = () => {
-    toggleHistoryBookmark(result.researchId);
+  const handleToggleBookmark = () => {
+    toggleBookmark(result.researchId);
     toast({
       title: result.isBookmarked ? "Bookmark removed" : "Bookmark added",
     });
@@ -134,7 +140,7 @@ ${result.aiResponse.sources?.map(source => `- ${source.title}: ${source.url}`).j
                 {result.aiResponse.title}
             </h1>
             <div className="flex items-center gap-2">
-                <Button variant={result.isBookmarked ? "secondary" : "outline"} size="sm" onClick={toggleBookmark}>
+                <Button variant={result.isBookmarked ? "secondary" : "outline"} size="sm" onClick={handleToggleBookmark}>
                     <BookMarked className="mr-2 h-4 w-4" />
                     {result.isBookmarked ? "Bookmarked" : "Bookmark"}
                 </Button>
@@ -145,7 +151,7 @@ ${result.aiResponse.sources?.map(source => `- ${source.title}: ${source.url}`).j
             </div>
         </div>
         <p className="text-lg text-muted-foreground">
-          {new Date(result.timestamp).toLocaleString()}
+          {result.timestamp.toLocaleString()}
         </p>
       </header>
       

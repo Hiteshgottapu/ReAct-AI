@@ -4,6 +4,12 @@ import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
+import { auth } from "@/lib/firebase"
+import { useAuth } from "@/hooks/use-auth"
+import { useToast } from "@/hooks/use-toast"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -24,6 +30,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
+import { Loader2 } from "lucide-react"
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -35,6 +42,12 @@ const GoogleIcon = () => (
 );
 
 export default function LoginPage() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const router = useRouter();
+  const { user, loading } = useAuth();
+  const { toast } = useToast();
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -43,10 +56,51 @@ export default function LoginPage() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    console.log(values)
-    // In a real app, this would handle authentication and redirect.
-    window.location.href = "/"
+  useEffect(() => {
+    if (!loading && user) {
+      router.push('/');
+    }
+  }, [user, loading, router]);
+
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    setIsLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, values.email, values.password);
+      router.push('/');
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Authentication Failed',
+        description: error.message,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      router.push('/');
+    } catch (error: any) {
+       toast({
+        variant: 'destructive',
+        title: 'Google Sign-In Failed',
+        description: error.message,
+      });
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  }
+  
+  if (loading || user) {
+      return (
+          <div className="flex h-screen w-screen items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin" />
+          </div>
+      )
   }
 
   return (
@@ -65,7 +119,7 @@ export default function LoginPage() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="name@example.com" {...field} />
+                    <Input placeholder="name@example.com" {...field} disabled={isLoading || isGoogleLoading}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -83,13 +137,14 @@ export default function LoginPage() {
                     </Link>
                   </div>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading || isGoogleLoading}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" disabled={isLoading || isGoogleLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Sign In
             </Button>
           </form>
@@ -100,8 +155,8 @@ export default function LoginPage() {
             OR
           </span>
         </div>
-        <Button variant="outline" className="w-full">
-          <GoogleIcon />
+        <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading || isGoogleLoading}>
+          {isGoogleLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <GoogleIcon />}
           Sign in with Google
         </Button>
       </CardContent>

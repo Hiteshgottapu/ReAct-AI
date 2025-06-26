@@ -2,9 +2,11 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowRight, BookMarked, Clock, Edit, Save, Search } from "lucide-react"
+import { ArrowRight, BookMarked, Clock, Edit, Save, Search, Loader2 } from "lucide-react"
+import { updateProfile } from "firebase/auth"
 
-import { mockUser } from "@/lib/mock-data"
+import { useAuth } from "@/hooks/use-auth"
+import { useToast } from "@/hooks/use-toast"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -16,8 +18,30 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useResearchHistory } from "@/hooks/use-research-history"
 
 function ProfileForm() {
-    const [displayName, setDisplayName] = useState(mockUser.displayName)
+    const { user } = useAuth();
+    const { toast } = useToast();
+    const [displayName, setDisplayName] = useState(user?.displayName || "")
     const [isEditing, setIsEditing] = useState(false)
+    const [isSaving, setIsSaving] = useState(false);
+
+    const handleSave = async () => {
+      if (!user || !displayName || displayName === user.displayName) {
+        setIsEditing(false);
+        return;
+      };
+      setIsSaving(true);
+      try {
+        await updateProfile(user, { displayName });
+        toast({ title: "Profile updated successfully!" });
+        setIsEditing(false);
+      } catch (error: any) {
+        toast({ variant: "destructive", title: "Update failed", description: error.message });
+      } finally {
+        setIsSaving(false);
+      }
+    }
+
+    if (!user) return null;
 
     return (
         <Card>
@@ -28,19 +52,21 @@ function ProfileForm() {
             <CardContent className="space-y-4">
                 <div className="flex items-center space-x-4">
                     <Avatar className="h-16 w-16">
-                        <AvatarImage src="https://placehold.co/128x128.png" data-ai-hint="avatar person" />
-                        <AvatarFallback>{displayName.split(" ").map(n => n[0]).join("")}</AvatarFallback>
+                        <AvatarImage src={user.photoURL || "https://placehold.co/128x128.png"} data-ai-hint="avatar person" />
+                        <AvatarFallback>{user.displayName?.split(" ").map(n => n[0]).join("") || user.email?.charAt(0).toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div className="space-y-1">
                         <Label htmlFor="displayName">Display Name</Label>
                         {isEditing ? (
                             <div className="flex items-center gap-2">
-                                <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
-                                <Button size="icon" onClick={() => setIsEditing(false)}><Save className="h-4 w-4" /></Button>
+                                <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} disabled={isSaving}/>
+                                <Button size="icon" onClick={handleSave} disabled={isSaving}>
+                                  {isSaving ? <Loader2 className="h-4 w-4 animate-spin"/> : <Save className="h-4 w-4" />}
+                                </Button>
                             </div>
                         ) : (
                              <div className="flex items-center gap-2">
-                                <p className="text-xl font-semibold">{displayName}</p>
+                                <p className="text-xl font-semibold">{user.displayName}</p>
                                 <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)}><Edit className="h-4 w-4" /></Button>
                             </div>
                         )}
@@ -48,7 +74,7 @@ function ProfileForm() {
                 </div>
                 <div>
                     <Label>Email</Label>
-                    <p className="text-muted-foreground">{mockUser.email}</p>
+                    <p className="text-muted-foreground">{user.email}</p>
                 </div>
             </CardContent>
         </Card>
@@ -58,15 +84,14 @@ function ProfileForm() {
 function ResearchHistoryList() {
     const [filter, setFilter] = useState("all") // 'all' or 'bookmarked'
     const [searchTerm, setSearchTerm] = useState("")
-    const { researchHistory } = useResearchHistory();
+    const { researchHistory, loading } = useResearchHistory();
 
     const filteredHistory = researchHistory
         .filter(item => filter === "bookmarked" ? item.isBookmarked : true)
         .filter(item => 
             item.queryText.toLowerCase().includes(searchTerm.toLowerCase()) || 
             item.aiResponse.title.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-        .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+        );
     
     return (
         <Card>
@@ -96,7 +121,11 @@ function ResearchHistoryList() {
                 </div>
 
                 <div className="space-y-4">
-                    {filteredHistory.length > 0 ? filteredHistory.map(item => (
+                    {loading ? (
+                       <div className="flex justify-center py-8">
+                           <Loader2 className="h-8 w-8 animate-spin" />
+                       </div>
+                    ) : filteredHistory.length > 0 ? filteredHistory.map(item => (
                         <div key={item.researchId} className="flex items-center justify-between rounded-lg border p-4">
                             <div className="space-y-1">
                                 <Link href={`/result/${item.researchId}`} className="font-medium hover:underline">{item.aiResponse.title}</Link>

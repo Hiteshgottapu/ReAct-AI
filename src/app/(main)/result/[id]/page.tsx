@@ -1,6 +1,6 @@
 "use client"
 
-import { notFound } from "next/navigation"
+import { notFound, useParams } from "next/navigation"
 import {
   BookMarked,
   Check,
@@ -74,7 +74,8 @@ function Feedback({ researchId }: { researchId: string }) {
   )
 }
 
-export default function ResultPage({ params }: { params: { id: string } }) {
+export default function ResultPage() {
+  const params = useParams<{ id: string }>()
   const { toast } = useToast()
   const { getResearchById, toggleBookmark: toggleHistoryBookmark } = useResearchHistory();
   const result = getResearchById(params.id)

@@ -16,9 +16,9 @@ import { collectAiFeedback } from "@/ai/flows/collect-ai-feedback"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { mockResearchHistory, mockUser } from "@/lib/mock-data"
-import type { ResearchResult } from "@/lib/types"
+import { mockUser } from "@/lib/mock-data"
 import { useToast } from "@/hooks/use-toast"
+import { useResearchHistory } from "@/hooks/use-research-history"
 
 function Feedback({ researchId }: { researchId: string }) {
   const [rating, setRating] = useState(0)
@@ -76,13 +76,20 @@ function Feedback({ researchId }: { researchId: string }) {
 
 export default function ResultPage({ params }: { params: { id: string } }) {
   const { toast } = useToast()
-  const result: ResearchResult | undefined = mockResearchHistory.find(
-    (r) => r.researchId === params.id
-  )
-  const [isBookmarked, setIsBookmarked] = useState(result?.isBookmarked || false)
+  const { getResearchById, toggleBookmark: toggleHistoryBookmark } = useResearchHistory();
+  const result = getResearchById(params.id)
 
   if (!result) {
-    notFound()
+    // A simple loading state while the history is being loaded from sessionStorage.
+    return (
+        <div className="mx-auto max-w-4xl space-y-8">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Loading research result...</CardTitle>
+                </CardHeader>
+            </Card>
+        </div>
+    )
   }
   
   const copyToClipboard = (text: string) => {
@@ -93,10 +100,9 @@ export default function ResultPage({ params }: { params: { id: string } }) {
   };
   
   const toggleBookmark = () => {
-    // In a real app, this would be an API call to update Firestore
-    setIsBookmarked(!isBookmarked);
+    toggleHistoryBookmark(result.researchId);
     toast({
-      title: isBookmarked ? "Bookmark removed" : "Bookmark added",
+      title: result.isBookmarked ? "Bookmark removed" : "Bookmark added",
     });
   }
 
@@ -127,9 +133,9 @@ ${result.aiResponse.sources?.map(source => `- ${source.title}: ${source.url}`).j
                 {result.aiResponse.title}
             </h1>
             <div className="flex items-center gap-2">
-                <Button variant={isBookmarked ? "secondary" : "outline"} size="sm" onClick={toggleBookmark}>
+                <Button variant={result.isBookmarked ? "secondary" : "outline"} size="sm" onClick={toggleBookmark}>
                     <BookMarked className="mr-2 h-4 w-4" />
-                    {isBookmarked ? "Bookmarked" : "Bookmark"}
+                    {result.isBookmarked ? "Bookmarked" : "Bookmark"}
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => copyToClipboard(fullText)}>
                     <Clipboard className="mr-2 h-4 w-4" />

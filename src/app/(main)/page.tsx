@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link";
 import { ArrowRight, BookMarked, Clock } from "lucide-react";
 
@@ -11,11 +13,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ResearchForm } from "@/components/research/research-form";
-import { mockResearchHistory } from "@/lib/mock-data";
 import { Badge } from "@/components/ui/badge";
+import { useResearchHistory } from "@/hooks/use-research-history";
 
 export default function DashboardPage() {
-  const recentResearch = mockResearchHistory.slice(0, 3);
+  const { researchHistory } = useResearchHistory();
+  const recentResearch = researchHistory.slice(0, 3);
 
   return (
     <div className="container mx-auto max-w-5xl space-y-12 py-8">

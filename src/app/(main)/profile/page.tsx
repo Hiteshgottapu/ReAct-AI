@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { ArrowRight, BookMarked, Clock, Edit, Save, Search } from "lucide-react"
 
-import { mockResearchHistory, mockUser } from "@/lib/mock-data"
+import { mockUser } from "@/lib/mock-data"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useResearchHistory } from "@/hooks/use-research-history"
 
 function ProfileForm() {
     const [displayName, setDisplayName] = useState(mockUser.displayName)
@@ -57,8 +58,9 @@ function ProfileForm() {
 function ResearchHistoryList() {
     const [filter, setFilter] = useState("all") // 'all' or 'bookmarked'
     const [searchTerm, setSearchTerm] = useState("")
+    const { researchHistory } = useResearchHistory();
 
-    const filteredHistory = mockResearchHistory
+    const filteredHistory = researchHistory
         .filter(item => filter === "bookmarked" ? item.isBookmarked : true)
         .filter(item => 
             item.queryText.toLowerCase().includes(searchTerm.toLowerCase()) || 

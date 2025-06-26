@@ -27,8 +27,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { generateResearchSummary } from "@/ai/flows/generate-research-summary"
 import { useRouter } from "next/navigation"
-import { mockResearchHistory, mockUser } from "@/lib/mock-data"
+import { mockUser } from "@/lib/mock-data"
 import type { ResearchResult } from "@/lib/types"
+import { useResearchHistory } from "@/hooks/use-research-history"
 
 const researchSchema = z.object({
   queryText: z.string().min(10, "Please enter a more detailed research topic."),
@@ -43,6 +44,7 @@ export function ResearchForm() {
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
   const router = useRouter()
+  const { addResearchResult } = useResearchHistory();
   
   const form = useForm<z.infer<typeof researchSchema>>({
     resolver: zodResolver(researchSchema),
@@ -80,7 +82,7 @@ export function ResearchForm() {
         isBookmarked: false,
       }
 
-      mockResearchHistory.unshift(newResearchResult);
+      addResearchResult(newResearchResult);
 
       toast({
         title: "Research Generated!",

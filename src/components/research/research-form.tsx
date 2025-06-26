@@ -26,6 +26,9 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { generateResearchSummary } from "@/ai/flows/generate-research-summary"
+import { useRouter } from "next/navigation"
+import { mockResearchHistory, mockUser } from "@/lib/mock-data"
+import type { ResearchResult } from "@/lib/types"
 
 const researchSchema = z.object({
   queryText: z.string().min(10, "Please enter a more detailed research topic."),
@@ -39,6 +42,7 @@ const researchSchema = z.object({
 export function ResearchForm() {
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
+  const router = useRouter()
   
   const form = useForm<z.infer<typeof researchSchema>>({
     resolver: zodResolver(researchSchema),
@@ -65,13 +69,27 @@ export function ResearchForm() {
         inputLinks: filteredLinks.length > 0 ? filteredLinks : undefined,
       })
 
+      const newResearchId = `res-${Date.now()}`
+      const newResearchResult: ResearchResult = {
+        researchId: newResearchId,
+        userId: mockUser.uid,
+        timestamp: new Date(),
+        queryText: values.queryText,
+        inputLinks: filteredLinks,
+        aiResponse: result,
+        isBookmarked: false,
+      }
+
+      mockResearchHistory.unshift(newResearchResult);
+
       toast({
         title: "Research Generated!",
-        description: `Successfully created summary: "${result.title}"`,
+        description: `Redirecting to summary: "${result.title}"`,
       })
 
-      alert(`Research complete! In a real app, you would be redirected to the results page. For now, find your result in the mock history on the profile page. Title: ${result.title}`);
       form.reset();
+      
+      router.push(`/result/${newResearchId}`)
 
     } catch (error) {
       console.error("Error generating research:", error)

@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, ChangeEvent } from "react"
 import Link from "next/link"
-import { ArrowRight, BookMarked, Clock, Edit, Save, Search, Loader2 } from "lucide-react"
+import { ArrowRight, BookMarked, Clock, Edit, Save, Search, Loader2, Upload } from "lucide-react"
 import { updateProfile } from "firebase/auth"
 
 import { useAuth } from "@/hooks/use-auth"
@@ -41,6 +41,20 @@ function ProfileForm() {
       }
     }
 
+    const handleAvatarUpload = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            // In a real app, you would upload this file to Firebase Storage
+            // and get a URL to update the user's profile.
+            console.log("Selected file:", file.name);
+            toast({
+                title: "Avatar Upload",
+                description: "File upload UI is ready. Backend logic needs to be implemented.",
+            });
+        }
+    };
+
+
     if (!user) return null;
 
     return (
@@ -49,31 +63,41 @@ function ProfileForm() {
                 <CardTitle>Profile Information</CardTitle>
                 <CardDescription>View and update your personal details.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-                <div className="flex items-start space-x-4">
-                    <Avatar className="h-16 w-16">
-                        <AvatarImage src={user.photoURL || "https://placehold.co/128x128.png"} data-ai-hint="avatar person" />
-                        <AvatarFallback>{user.displayName?.split(" ").map(n => n[0]).join("") || user.email?.charAt(0).toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-grow space-y-4">
-                        <div>
-                            <Label htmlFor="displayName">Display Name</Label>
-                            {isEditing ? (
+            <CardContent>
+                <div className="flex flex-col items-center gap-6 text-center sm:flex-row sm:items-start sm:text-left">
+                    <div className="group relative">
+                        <Avatar className="h-24 w-24">
+                             <AvatarImage src={user.photoURL || "https://placehold.co/128x128.png"} data-ai-hint="avatar person" />
+                             <AvatarFallback>{user.displayName?.split(" ").map(n => n[0]).join("") || user.email?.charAt(0).toUpperCase()}</AvatarFallback>
+                        </Avatar>
+                        <label 
+                            htmlFor="avatar-upload"
+                            className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black/60 opacity-0 transition-opacity group-hover:opacity-100"
+                        >
+                            <Upload className="h-6 w-6 text-white" />
+                            <span className="sr-only">Upload new avatar</span>
+                        </label>
+                        <input id="avatar-upload" type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} />
+                    </div>
+                    <div className="flex-grow space-y-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="displayName" className="text-sm text-muted-foreground">Display Name</Label>
+                             {isEditing ? (
                                 <div className="flex items-center gap-2">
-                                    <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} disabled={isSaving}/>
+                                    <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} disabled={isSaving} className="max-w-xs"/>
                                     <Button size="icon" onClick={handleSave} disabled={isSaving}>
                                       {isSaving ? <Loader2 className="h-4 w-4 animate-spin"/> : <Save className="h-4 w-4" />}
                                     </Button>
                                 </div>
                             ) : (
-                                <div className="flex items-center justify-between">
-                                    <p className="font-medium">{user.displayName}</p>
-                                    <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)}><Edit className="h-4 w-4" /></Button>
+                                <div className="flex items-center justify-center gap-4 sm:justify-between">
+                                    <p className="text-lg font-semibold">{user.displayName}</p>
+                                    <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)} className="shrink-0"><Edit className="h-4 w-4" /></Button>
                                 </div>
                             )}
                         </div>
-                        <div>
-                            <Label>Email</Label>
+                        <div className="space-y-2">
+                            <Label className="text-sm text-muted-foreground">Email</Label>
                             <p className="text-muted-foreground">{user.email}</p>
                         </div>
                     </div>

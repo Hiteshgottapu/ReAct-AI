@@ -21,8 +21,8 @@ export default function DashboardPage() {
   const recentResearch = researchHistory.slice(0, 3);
 
   return (
-    <div className="container mx-auto max-w-5xl space-y-12 py-8">
-      <section className="text-center">
+    <div className="space-y-12">
+      <section>
         <h1 className="bg-gradient-to-r from-primary to-violet-400 bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
           ReAct to Information
         </h1>

@@ -50,31 +50,33 @@ function ProfileForm() {
                 <CardDescription>View and update your personal details.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                <div className="flex items-center space-x-4">
+                <div className="flex items-start space-x-4">
                     <Avatar className="h-16 w-16">
                         <AvatarImage src={user.photoURL || "https://placehold.co/128x128.png"} data-ai-hint="avatar person" />
                         <AvatarFallback>{user.displayName?.split(" ").map(n => n[0]).join("") || user.email?.charAt(0).toUpperCase()}</AvatarFallback>
                     </Avatar>
-                    <div className="space-y-1">
-                        <Label htmlFor="displayName">Display Name</Label>
-                        {isEditing ? (
-                            <div className="flex items-center gap-2">
-                                <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} disabled={isSaving}/>
-                                <Button size="icon" onClick={handleSave} disabled={isSaving}>
-                                  {isSaving ? <Loader2 className="h-4 w-4 animate-spin"/> : <Save className="h-4 w-4" />}
-                                </Button>
-                            </div>
-                        ) : (
-                             <div className="flex items-center gap-2">
-                                <p className="text-xl font-semibold">{user.displayName}</p>
-                                <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)}><Edit className="h-4 w-4" /></Button>
-                            </div>
-                        )}
+                    <div className="flex-grow space-y-4">
+                        <div>
+                            <Label htmlFor="displayName">Display Name</Label>
+                            {isEditing ? (
+                                <div className="flex items-center gap-2">
+                                    <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} disabled={isSaving}/>
+                                    <Button size="icon" onClick={handleSave} disabled={isSaving}>
+                                      {isSaving ? <Loader2 className="h-4 w-4 animate-spin"/> : <Save className="h-4 w-4" />}
+                                    </Button>
+                                </div>
+                            ) : (
+                                <div className="flex items-center justify-between">
+                                    <p className="font-medium">{user.displayName}</p>
+                                    <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)}><Edit className="h-4 w-4" /></Button>
+                                </div>
+                            )}
+                        </div>
+                        <div>
+                            <Label>Email</Label>
+                            <p className="text-muted-foreground">{user.email}</p>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <Label>Email</Label>
-                    <p className="text-muted-foreground">{user.email}</p>
                 </div>
             </CardContent>
         </Card>

@@ -42,11 +42,11 @@ export function Footer() {
                     <div className="space-y-4">
                         <h3 className="font-semibold uppercase tracking-wider">Follow Us</h3>
                         <div className="flex items-center space-x-4">
-                           <a href="https://github.com/hitesh-gottapu" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                           <a href="https://github.com/Hiteshgottapu/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                                 <Github className="h-6 w-6" />
                                 <span className="sr-only">GitHub</span>
                             </a>
-                           <a href="https://www.linkedin.com/in/hitesh-gottapu-11725b217/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                           <a href="https://www.linkedin.com/in/hitesh-data-scientist" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                                 <Linkedin className="h-6 w-6" />
                                 <span className="sr-only">LinkedIn</span>
                             </a>

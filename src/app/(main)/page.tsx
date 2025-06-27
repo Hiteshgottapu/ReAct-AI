@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link";
-import { ArrowRight, BookMarked, Clock, Loader2, Search } from "lucide-react";
+import { ArrowRight, BookMarked, Clock, Loader2, Search, History } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,8 +21,8 @@ export default function DashboardPage() {
   const recentResearch = researchHistory.slice(0, 3);
 
   return (
-    <div className="space-y-12">
-      <div>
+    <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-8 space-y-12 lg:space-y-0">
+      <div className="lg:col-span-2 space-y-8">
         <section>
           <h1 className="bg-gradient-to-r from-primary to-violet-400 bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
             ReAct to Information
@@ -32,14 +32,17 @@ export default function DashboardPage() {
           </p>
         </section>
 
-        <section className="mt-12">
+        <section>
           <ResearchForm />
         </section>
       </div>
-
-      <section className="space-y-6">
+      
+      <aside className="lg:col-span-1 space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold">Recent Research</h2>
+          <h2 className="text-2xl font-semibold flex items-center gap-2">
+            <History className="h-6 w-6" />
+            Recent Research
+          </h2>
           <Button variant="link" asChild>
             <Link href="/profile">
               View All <ArrowRight className="ml-2 h-4 w-4" />
@@ -51,9 +54,9 @@ export default function DashboardPage() {
             <Loader2 className="h-8 w-8 animate-spin" />
           </div>
         ) : recentResearch.length > 0 ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="space-y-6">
             {recentResearch.map((item) => (
-              <Card key={item.researchId} className="flex flex-col">
+              <Card key={item.researchId} className="flex flex-col transition-transform transform hover:scale-[1.02] hover:shadow-lg dark:hover:shadow-primary/10">
                 <CardHeader>
                   {item.aiResponse.tags && item.aiResponse.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2">
@@ -95,7 +98,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         )}
-      </section>
+      </aside>
     </div>
   );
 }

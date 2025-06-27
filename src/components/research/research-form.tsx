@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useForm, useFieldArray } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { Loader2, Plus, Search, Trash2 } from "lucide-react"
+import { Loader2, Plus, Trash2, FileText, Sparkles } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -114,26 +114,29 @@ export function ResearchForm() {
   }
 
   return (
-    <Card>
+    <Card className="shadow-lg dark:shadow-primary/10">
       <CardHeader>
-        <CardTitle>Start New Research</CardTitle>
+        <CardTitle className="flex items-center gap-3 text-2xl">
+          <FileText className="h-6 w-6" />
+          Start New Research
+        </CardTitle>
         <CardDescription>
           Enter your topic and any relevant links to begin.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
               name="queryText"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Research Topic</FormLabel>
+                  <FormLabel className="text-base font-semibold">Research Topic</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="e.g., The future of renewable energy sources..."
-                      className="min-h-[100px]"
+                      placeholder="e.g., The future of renewable energy sources and their impact on global economies..."
+                      className="min-h-[120px] text-base"
                       {...field}
                     />
                   </FormControl>
@@ -142,8 +145,8 @@ export function ResearchForm() {
               )}
             />
 
-            <div>
-              <FormLabel>Reference Links (Optional)</FormLabel>
+            <div className="space-y-4">
+              <FormLabel className="text-base font-semibold">Reference Links (Optional)</FormLabel>
               <p className="text-sm text-muted-foreground">Provide URLs for the AI to use as context.</p>
               <div className="mt-2 space-y-3">
                 {fields.map((field, index) => (
@@ -158,6 +161,7 @@ export function ResearchForm() {
                             <Input
                               placeholder="https://example.com"
                               {...field}
+                              className="text-base"
                             />
                           </FormControl>
                           <Button
@@ -166,6 +170,7 @@ export function ResearchForm() {
                             size="icon"
                             onClick={() => remove(index)}
                             disabled={fields.length <= 1}
+                            className="hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -180,14 +185,14 @@ export function ResearchForm() {
                 type="button"
                 variant="outline"
                 size="sm"
-                className="mt-3"
+                className="mt-2"
                 onClick={() => append({ value: "" })}
               >
                 <Plus className="mr-2 h-4 w-4" /> Add Another Link
               </Button>
             </div>
 
-            <Button type="submit" disabled={isLoading} className="w-full">
+            <Button type="submit" disabled={isLoading} size="lg" className="w-full text-lg">
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -195,7 +200,7 @@ export function ResearchForm() {
                 </>
               ) : (
                 <>
-                  <Search className="mr-2 h-4 w-4" />
+                  <Sparkles className="mr-2 h-5 w-5" />
                   Generate Insights
                 </>
               )}

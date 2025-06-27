@@ -22,7 +22,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-12">
-      <div className="max-w-4xl">
+      <div>
         <section>
           <h1 className="bg-gradient-to-r from-primary to-violet-400 bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
             ReAct to Information
@@ -83,7 +83,7 @@ export default function DashboardPage() {
             ))}
           </div>
         ) : (
-          <Card className="max-w-4xl">
+          <Card>
             <CardContent className="py-10 text-center">
               <div className="mb-4 flex justify-center">
                 <div className="rounded-full bg-secondary p-3">

@@ -24,11 +24,11 @@ export default function DashboardPage() {
     <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-8 space-y-8 lg:space-y-0">
       <div className="lg:col-span-2 space-y-8">
         <section>
-          <h1 className="bg-gradient-to-r from-primary to-violet-400 bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
-            ReAct to Information
+          <h1 className="bg-gradient-to-r from-primary to-accent bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
+            Contextual Insights
           </h1>
           <p className="mt-4 text-lg text-muted-foreground md:text-xl">
-            Your personal AI research assistant. Just ask, and we&apos;ll dive deep.
+            Your personal AI research assistant. Unlock insights from any source.
           </p>
         </section>
 

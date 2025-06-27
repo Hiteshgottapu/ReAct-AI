@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { Loader2 } from "lucide-react"
+import { BrainCircuit, Loader2 } from "lucide-react"
 
 const signupSchema = z.object({
   displayName: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -116,8 +116,11 @@ export default function SignupPage() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold">Create a ReAct Account</CardTitle>
-        <CardDescription>Get started with your AI research assistant.</CardDescription>
+        <div className="flex justify-center mb-4">
+            <BrainCircuit className="h-10 w-10 text-primary" />
+        </div>
+        <CardTitle className="text-2xl font-bold">Contextual Insights</CardTitle>
+        <CardDescription>Create an account to get started.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

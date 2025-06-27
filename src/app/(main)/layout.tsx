@@ -61,7 +61,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
               <div className="flex items-center gap-2 p-2">
                   <BrainCircuit className="h-6 w-6 text-primary" />
                   <h1 className="text-lg font-bold group-data-[collapsible=icon]:hidden">
-                      ReAct
+                      Contextual Insights
                   </h1>
               </div>
             </SidebarHeader>

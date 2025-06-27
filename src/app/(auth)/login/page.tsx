@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { Loader2 } from "lucide-react"
+import { BrainCircuit, Loader2 } from "lucide-react"
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -106,8 +106,11 @@ export default function LoginPage() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold">ReAct</CardTitle>
-        <CardDescription>Welcome back! Sign in to continue.</CardDescription>
+        <div className="flex justify-center mb-4">
+            <BrainCircuit className="h-10 w-10 text-primary" />
+        </div>
+        <CardTitle className="text-2xl font-bold">Contextual Insights</CardTitle>
+        <CardDescription>Welcome back! Sign in to your account.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

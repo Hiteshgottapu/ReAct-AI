@@ -21,7 +21,7 @@ export default function DashboardPage() {
   const recentResearch = researchHistory.slice(0, 3);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-8 space-y-12 lg:space-y-0">
+    <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-8 space-y-8 lg:space-y-0">
       <div className="lg:col-span-2 space-y-8">
         <section>
           <h1 className="bg-gradient-to-r from-primary to-violet-400 bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
@@ -37,7 +37,7 @@ export default function DashboardPage() {
         </section>
       </div>
       
-      <aside className="lg:col-span-1 space-y-6">
+      <aside className="lg:col-span-1 space-y-8">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-semibold flex items-center gap-2">
             <History className="h-6 w-6" />

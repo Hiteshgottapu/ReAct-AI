@@ -23,7 +23,7 @@ export default function SettingsPage() {
         toast({ title: "API Key Saved", description: "Your API key has been updated." })
     }
   return (
-    <div className="container mx-auto max-w-3xl space-y-8 py-8">
+    <div className="container mx-auto max-w-5xl space-y-8">
       <h1 className="text-3xl font-bold">Settings</h1>
       
       <Card>

@@ -79,7 +79,7 @@ export default function ResultPage() {
 
   if (loading) {
     return (
-        <div className="mx-auto max-w-4xl flex justify-center items-center py-10">
+        <div className="mx-auto max-w-5xl flex justify-center items-center py-10">
             <Loader2 className="h-8 w-8 animate-spin" />
         </div>
     )
@@ -87,7 +87,7 @@ export default function ResultPage() {
 
   if (!result) {
     return (
-        <div className="mx-auto max-w-4xl space-y-8">
+        <div className="mx-auto max-w-5xl space-y-8">
             <Card>
                 <CardHeader>
                     <CardTitle>Research Result Not Found</CardTitle>
@@ -131,7 +131,7 @@ ${result.aiResponse.sources?.map(source => `- ${source.title}: ${source.url}`).j
   `.trim();
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8">
+    <div className="mx-auto max-w-5xl space-y-8">
       <header className="space-y-4">
         <p className="text-sm text-muted-foreground">
           Research for: "{result.queryText}"

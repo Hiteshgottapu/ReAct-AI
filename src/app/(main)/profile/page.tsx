@@ -179,7 +179,7 @@ function ResearchHistoryList() {
 
 export default function ProfilePage() {
     return (
-        <div className="container mx-auto max-w-5xl space-y-8 py-8">
+        <div className="container mx-auto max-w-5xl space-y-8">
             <h1 className="text-3xl font-bold">Your Profile</h1>
             <Tabs defaultValue="account">
                 <TabsList>

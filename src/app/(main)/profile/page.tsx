@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, ChangeEvent } from "react"
@@ -10,35 +11,49 @@ import { useToast } from "@/hooks/use-toast"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useResearchHistory } from "@/hooks/use-research-history"
+import { Textarea } from "@/components/ui/textarea"
 
 function ProfileForm() {
     const { user } = useAuth();
     const { toast } = useToast();
-    const [displayName, setDisplayName] = useState(user?.displayName || "")
-    const [isEditing, setIsEditing] = useState(false)
+    
+    const [displayName, setDisplayName] = useState(user?.displayName || "");
+    const [title, setTitle] = useState("AI Researcher"); // Placeholder
+    const [bio, setBio] = useState("Passionate about the future of artificial intelligence and its impact on technology and society."); // Placeholder
+
+    const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
 
     const handleSave = async () => {
-      if (!user || !displayName || displayName === user.displayName) {
+        if (!user) return;
+        setIsSaving(true);
+        try {
+            if (displayName !== user.displayName) {
+                await updateProfile(user, { displayName });
+            }
+            // In a real app, you would save title and bio to your database (e.g., Firestore)
+            console.log("Saving additional user data (UI demo):", { title, bio });
+            toast({ title: "Profile updated successfully!" });
+            setIsEditing(false);
+        } catch (error: any) {
+            toast({ variant: "destructive", title: "Update failed", description: error.message });
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const handleCancel = () => {
+        // Reset to original values. A more robust solution would store initial state when editing starts.
+        setDisplayName(user?.displayName || "");
+        setTitle("AI Researcher"); // Reset placeholder
+        setBio("Passionate about the future of artificial intelligence and its impact on technology and society."); // Reset placeholder
         setIsEditing(false);
-        return;
-      };
-      setIsSaving(true);
-      try {
-        await updateProfile(user, { displayName });
-        toast({ title: "Profile updated successfully!" });
-        setIsEditing(false);
-      } catch (error: any) {
-        toast({ variant: "destructive", title: "Update failed", description: error.message });
-      } finally {
-        setIsSaving(false);
-      }
     }
 
     const handleAvatarUpload = (e: ChangeEvent<HTMLInputElement>) => {
@@ -54,55 +69,89 @@ function ProfileForm() {
         }
     };
 
-
     if (!user) return null;
+    
+    const creationDate = user.metadata.creationTime 
+      ? new Date(user.metadata.creationTime).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+      : 'N/A';
 
     return (
         <Card>
-            <CardHeader>
-                <CardTitle>Profile Information</CardTitle>
-                <CardDescription>View and update your personal details.</CardDescription>
+            <CardHeader className="flex flex-row items-start justify-between">
+                <div>
+                    <CardTitle>Profile Information</CardTitle>
+                    <CardDescription>View and update your personal details.</CardDescription>
+                </div>
+                {!isEditing && (
+                    <Button variant="outline" onClick={() => setIsEditing(true)}>
+                        <Edit className="mr-2 h-4 w-4" /> Edit Profile
+                    </Button>
+                )}
             </CardHeader>
             <CardContent>
-                <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
-                    <div className="group relative">
-                        <Avatar className="h-32 w-32">
-                             <AvatarImage src={user.photoURL || "https://placehold.co/128x128.png"} data-ai-hint="avatar person" />
-                             <AvatarFallback>{user.displayName?.split(" ").map(n => n[0]).join("") || user.email?.charAt(0).toUpperCase()}</AvatarFallback>
-                        </Avatar>
-                        <label 
-                            htmlFor="avatar-upload"
-                            className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black/60 opacity-0 transition-opacity group-hover:opacity-100"
-                        >
-                            <Upload className="h-6 w-6 text-white" />
-                            <span className="sr-only">Upload new avatar</span>
-                        </label>
-                        <input id="avatar-upload" type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} />
-                    </div>
-                    <div className="flex-grow space-y-4 text-center sm:text-left">
-                        <div className="space-y-2">
-                            <Label htmlFor="displayName">Display Name</Label>
-                             {isEditing ? (
-                                <div className="flex items-center justify-center gap-2 sm:justify-start">
-                                    <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} disabled={isSaving} className="max-w-xs"/>
-                                    <Button size="icon" onClick={handleSave} disabled={isSaving}>
-                                      {isSaving ? <Loader2 className="h-4 w-4 animate-spin"/> : <Save className="h-4 w-4" />}
-                                    </Button>
-                                </div>
-                            ) : (
-                                <div className="flex items-center justify-center gap-2 sm:justify-start">
-                                    <p className="text-xl font-semibold">{user.displayName}</p>
-                                    <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)} className="shrink-0"><Edit className="h-4 w-4" /></Button>
-                                </div>
-                            )}
+                <div className="grid gap-8 md:grid-cols-3">
+                    <div className="flex flex-col items-center text-center gap-4 md:col-span-1 md:border-r md:pr-8">
+                        <div className="group relative">
+                            <Avatar className="h-32 w-32">
+                                 <AvatarImage src={user.photoURL || "https://placehold.co/128x128.png"} data-ai-hint="avatar person" />
+                                 <AvatarFallback>{user.displayName?.split(" ").map(n => n[0]).join("") || user.email?.charAt(0).toUpperCase()}</AvatarFallback>
+                            </Avatar>
+                            <label 
+                                htmlFor="avatar-upload"
+                                className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black/60 opacity-0 transition-opacity group-hover:opacity-100"
+                            >
+                                <Upload className="h-6 w-6 text-white" />
+                                <span className="sr-only">Upload new avatar</span>
+                            </label>
+                            <input id="avatar-upload" type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} />
                         </div>
-                        <div className="space-y-2">
-                            <Label>Email</Label>
+                        <div className="space-y-1">
+                            <h3 className="text-xl font-semibold">{displayName}</h3>
                             <p className="text-muted-foreground">{user.email}</p>
+                            <p className="text-sm text-muted-foreground pt-2">Member since {creationDate}</p>
                         </div>
+                    </div>
+
+                    <div className="space-y-6 md:col-span-2">
+                        {isEditing ? (
+                            <>
+                                <div className="space-y-2">
+                                    <Label htmlFor="displayName">Display Name</Label>
+                                    <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} disabled={isSaving} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="title">Professional Title</Label>
+                                    <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g., AI Researcher" disabled={isSaving}/>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="bio">Bio</Label>
+                                    <Textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Tell us about yourself" rows={4} disabled={isSaving}/>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <div className="space-y-2">
+                                    <Label>Professional Title</Label>
+                                    <p className="text-muted-foreground">{title}</p>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Bio</Label>
+                                    <p className="text-muted-foreground whitespace-pre-wrap">{bio}</p>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </CardContent>
+            {isEditing && (
+                <CardFooter className="justify-end gap-2 border-t pt-6">
+                    <Button variant="ghost" onClick={handleCancel} disabled={isSaving}>Cancel</Button>
+                    <Button onClick={handleSave} disabled={isSaving}>
+                        {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Save className="mr-2 h-4 w-4" />}
+                        Save Changes
+                    </Button>
+                </CardFooter>
+            )}
         </Card>
     )
 }
@@ -181,7 +230,7 @@ export default function ProfilePage() {
     return (
         <div className="w-full space-y-8">
             <h1 className="text-3xl font-bold text-center">Your Profile</h1>
-            <Tabs defaultValue="account">
+            <Tabs defaultValue="account" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="account">Account</TabsTrigger>
                     <TabsTrigger value="history">History</TabsTrigger>
@@ -196,3 +245,4 @@ export default function ProfilePage() {
         </div>
     )
 }
+

@@ -64,9 +64,9 @@ function ProfileForm() {
                 <CardDescription>View and update your personal details.</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="flex flex-col items-center gap-6 text-center sm:flex-row sm:items-start sm:text-left">
+                <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
                     <div className="group relative">
-                        <Avatar className="h-24 w-24">
+                        <Avatar className="h-32 w-32">
                              <AvatarImage src={user.photoURL || "https://placehold.co/128x128.png"} data-ai-hint="avatar person" />
                              <AvatarFallback>{user.displayName?.split(" ").map(n => n[0]).join("") || user.email?.charAt(0).toUpperCase()}</AvatarFallback>
                         </Avatar>
@@ -79,25 +79,25 @@ function ProfileForm() {
                         </label>
                         <input id="avatar-upload" type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} />
                     </div>
-                    <div className="flex-grow space-y-6">
+                    <div className="flex-grow space-y-4 text-center sm:text-left">
                         <div className="space-y-2">
-                            <Label htmlFor="displayName" className="text-sm text-muted-foreground">Display Name</Label>
+                            <Label htmlFor="displayName">Display Name</Label>
                              {isEditing ? (
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center justify-center gap-2 sm:justify-start">
                                     <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} disabled={isSaving} className="max-w-xs"/>
                                     <Button size="icon" onClick={handleSave} disabled={isSaving}>
                                       {isSaving ? <Loader2 className="h-4 w-4 animate-spin"/> : <Save className="h-4 w-4" />}
                                     </Button>
                                 </div>
                             ) : (
-                                <div className="flex items-center justify-center gap-4 sm:justify-between">
-                                    <p className="text-lg font-semibold">{user.displayName}</p>
+                                <div className="flex items-center justify-center gap-2 sm:justify-start">
+                                    <p className="text-xl font-semibold">{user.displayName}</p>
                                     <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)} className="shrink-0"><Edit className="h-4 w-4" /></Button>
                                 </div>
                             )}
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-sm text-muted-foreground">Email</Label>
+                            <Label>Email</Label>
                             <p className="text-muted-foreground">{user.email}</p>
                         </div>
                     </div>

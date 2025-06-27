@@ -41,6 +41,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const getPageTitle = (path: string) => {
     if (path === "/") return "Dashboard";
     if (path.startsWith("/result")) return "Research Result";
+    if (path.startsWith("/bookmarks")) return "Bookmarks";
     const segment = path.split('/')[1];
     return segment.charAt(0).toUpperCase() + segment.slice(1);
   }
@@ -85,8 +86,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={pathname.includes("bookmarks")}>
-                    <Link href="/profile">
+                  <SidebarMenuButton asChild isActive={isActive("/bookmarks")}>
+                    <Link href="/bookmarks">
                       <BookMarked />
                       <span>Bookmarks</span>
                     </Link>

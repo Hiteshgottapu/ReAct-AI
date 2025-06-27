@@ -22,18 +22,20 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-12">
-      <section>
-        <h1 className="bg-gradient-to-r from-primary to-violet-400 bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
-          ReAct to Information
-        </h1>
-        <p className="mt-4 text-lg text-muted-foreground md:text-xl">
-          Your personal AI research assistant. Just ask, and we&apos;ll dive deep.
-        </p>
-      </section>
+      <div className="max-w-4xl">
+        <section>
+          <h1 className="bg-gradient-to-r from-primary to-violet-400 bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
+            ReAct to Information
+          </h1>
+          <p className="mt-4 text-lg text-muted-foreground md:text-xl">
+            Your personal AI research assistant. Just ask, and we&apos;ll dive deep.
+          </p>
+        </section>
 
-      <section>
-        <ResearchForm />
-      </section>
+        <section className="mt-12">
+          <ResearchForm />
+        </section>
+      </div>
 
       <section className="space-y-6">
         <div className="flex items-center justify-between">
@@ -81,7 +83,7 @@ export default function DashboardPage() {
             ))}
           </div>
         ) : (
-          <Card>
+          <Card className="max-w-4xl">
             <CardContent className="py-10 text-center">
               <div className="mb-4 flex justify-center">
                 <div className="rounded-full bg-secondary p-3">

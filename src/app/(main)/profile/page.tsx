@@ -179,10 +179,10 @@ function ResearchHistoryList() {
 
 export default function ProfilePage() {
     return (
-        <div className="container mx-auto max-w-5xl space-y-8">
-            <h1 className="text-3xl font-bold">Your Profile</h1>
+        <div className="w-full max-w-4xl mx-auto space-y-8">
+            <h1 className="text-3xl font-bold text-center">Your Profile</h1>
             <Tabs defaultValue="account">
-                <TabsList>
+                <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="account">Account</TabsTrigger>
                     <TabsTrigger value="history">History</TabsTrigger>
                 </TabsList>

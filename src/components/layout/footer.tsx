@@ -21,7 +21,7 @@ export function Footer() {
                     <div className="space-y-4">
                         <Link href="/" className="flex items-center gap-2">
                             <BrainCircuit className="h-8 w-8 text-primary" />
-                            <span className="text-xl font-bold">Contextual Insights</span>
+                            <span className="text-xl font-bold">ReAct-AI</span>
                         </Link>
                         <p className="text-sm text-muted-foreground">
                             Powered by Gemini – Built for Curious Minds

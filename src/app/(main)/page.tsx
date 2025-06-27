@@ -25,7 +25,7 @@ export default function DashboardPage() {
       <div className="lg:col-span-2 space-y-8">
         <section>
           <h1 className="bg-gradient-to-r from-primary to-accent bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
-            Contextual Insights
+            ReAct-AI
           </h1>
           <p className="mt-4 text-lg text-muted-foreground md:text-xl">
             Your personal AI research assistant. Unlock insights from any source.

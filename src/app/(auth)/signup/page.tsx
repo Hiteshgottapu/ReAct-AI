@@ -119,7 +119,7 @@ export default function SignupPage() {
         <div className="flex justify-center mb-4">
             <BrainCircuit className="h-10 w-10 text-primary" />
         </div>
-        <CardTitle className="text-2xl font-bold">Contextual Insights</CardTitle>
+        <CardTitle className="text-2xl font-bold">ReAct-AI</CardTitle>
         <CardDescription>Create an account to get started.</CardDescription>
       </CardHeader>
       <CardContent>

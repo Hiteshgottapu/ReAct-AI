@@ -5,8 +5,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/components/auth-provider";
 
 export const metadata: Metadata = {
-  title: "Contextual Insights",
-  description: "Unlock insights from any source.",
+  title: "ReAct-AI",
+  description: "Your personal AI research assistant.",
 };
 
 export default function RootLayout({

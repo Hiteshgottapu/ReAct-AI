@@ -231,7 +231,7 @@ export default function ProfilePage() {
         <div className="w-full space-y-8">
             <h1 className="text-3xl font-bold text-center">Your Profile</h1>
             <Tabs defaultValue="account" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="mx-auto flex w-fit">
                     <TabsTrigger value="account">Account</TabsTrigger>
                     <TabsTrigger value="history">History</TabsTrigger>
                 </TabsList>
@@ -246,3 +246,4 @@ export default function ProfilePage() {
     )
 }
 
+    

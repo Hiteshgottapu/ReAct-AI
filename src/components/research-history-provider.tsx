@@ -23,14 +23,33 @@ import { auth, db } from '@/lib/firebase';
 import type { ResearchResult } from '@/lib/types';
 
 // --- E2EE Simulation ---
+// In a real application, use a robust library like tweetnacl-js or libsodium.js.
+// The key should be derived from user password or stored securely, not hardcoded.
 const encrypt = (text: string): string => {
   if (typeof text !== 'string' || !text) return text;
-  return text.split('').reverse().join('');
+  // This is a simple XOR cipher for demonstration purposes, NOT secure.
+  const key = 'secret-key';
+  let result = '';
+  for (let i = 0; i < text.length; i++) {
+    result += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+  }
+  return btoa(result); // Base64 encode to handle binary data
 };
 
 const decrypt = (text: string): string => {
   if (typeof text !== 'string' || !text) return text;
-  return text.split('').reverse().join('');
+  try {
+    const decodedText = atob(text);
+    const key = 'secret-key';
+    let result = '';
+    for (let i = 0; i < decodedText.length; i++) {
+      result += String.fromCharCode(decodedText.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+    }
+    return result;
+  } catch (e) {
+    // If decryption fails (e.g., already decrypted), return original text.
+    return text;
+  }
 };
 
 const encryptAiResponse = (response: ResearchResult['aiResponse']) => {
@@ -40,6 +59,7 @@ const encryptAiResponse = (response: ResearchResult['aiResponse']) => {
     introduction: encrypt(response.introduction),
     keyInsights: response.keyInsights.map(encrypt),
     conclusion: encrypt(response.conclusion),
+    // Sources and tags are generally less sensitive, but can be encrypted too
   };
 };
 
@@ -53,6 +73,7 @@ const decryptAiResponse = (response: ResearchResult['aiResponse']) => {
   };
 };
 // --- End of E2EE Simulation ---
+
 
 interface ResearchHistoryContextType {
   researchHistory: ResearchResult[];

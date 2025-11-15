@@ -57,7 +57,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   if (loading && pathname !== '/') {
     return (
       <div className="flex h-screen items-center justify-center bg-[#020617]">
-        <Loader2 className="h-8 w-8 animate-spin text-[#38bdf8]" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -68,7 +68,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         <div className="flex min-h-screen flex-col bg-[#020617] font-body">
             <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-[#1f2933] bg-[#0f172a]/80 px-4 backdrop-blur-sm sm:px-6">
                  <Link href="/" className="flex items-center gap-2">
-                    <BrainCircuit className="h-6 w-6 text-[#38bdf8]" />
+                    <BrainCircuit className="h-6 w-6 text-primary" />
                     <h1 className="text-lg font-bold font-headline">
                         ReAct-AI
                     </h1>
@@ -80,7 +80,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                      <Button asChild variant="ghost" className="hidden sm:inline-flex">
                         <Link href="/#how-it-works">How It Works</Link>
                      </Button>
-                     <Button asChild size="sm" className="bg-[#38bdf8] hover:bg-[#38bdf8]/90 text-[#020617] rounded-full font-bold uppercase tracking-wide">
+                     <Button asChild size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full font-bold uppercase tracking-wide">
                       <Link href="/login">Login</Link>
                     </Button>
                 </div>
@@ -100,7 +100,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             <Sidebar className="border-r border-[#1f2933]">
               <SidebarHeader>
                 <div className="flex items-center gap-2 p-2">
-                    <BrainCircuit className="h-6 w-6 text-[#38bdf8]" />
+                    <BrainCircuit className="h-6 w-6 text-primary" />
                     <h1 className="text-lg font-bold group-data-[collapsible=icon]:hidden font-headline">
                         ReAct-AI
                     </h1>

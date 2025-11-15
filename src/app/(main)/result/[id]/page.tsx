@@ -5,6 +5,7 @@ import {
   BookMarked,
   Check,
   Clipboard,
+  Download,
   Info,
   Lightbulb,
   Link as LinkIcon,
@@ -13,6 +14,7 @@ import {
   Target,
 } from "lucide-react"
 import { useState } from "react"
+import jsPDF from "jspdf"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -79,7 +81,7 @@ export default function ResultPage() {
 
   if (loading) {
     return (
-        <div className="mx-auto max-w-5xl flex justify-center items-center py-10">
+        <div className="mx-auto flex max-w-5xl items-center justify-center py-10">
             <Loader2 className="h-8 w-8 animate-spin" />
         </div>
     )
@@ -113,6 +115,73 @@ export default function ResultPage() {
       title: result.isBookmarked ? "Bookmark removed" : "Bookmark added",
     });
   }
+
+  const handleDownload = () => {
+    const doc = new jsPDF();
+    const margin = 15;
+    const pageHeight = doc.internal.pageSize.getHeight();
+    let yPos = margin;
+
+    const addText = (text: string, size: number, options?: any) => {
+        const splitText = doc.splitTextToSize(text, doc.internal.pageSize.getWidth() - margin * 2);
+        splitText.forEach((line: string) => {
+            if (yPos > pageHeight - margin) {
+                doc.addPage();
+                yPos = margin;
+            }
+            doc.text(line, margin, yPos, options);
+            yPos += (size / 2); // Line height
+        });
+        yPos += 5; // Paragraph spacing
+    };
+
+    doc.setFont("helvetica", "bold");
+    addText(result.aiResponse.title, 22);
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    addText(`Research for: "${result.queryText}"`, 10);
+    addText(`Date: ${result.timestamp.toLocaleString()}`, 10);
+
+    yPos += 10;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    addText("Introduction", 16);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+    addText(result.aiResponse.introduction, 12);
+    
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    addText("Key Insights", 16);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+    result.aiResponse.keyInsights.forEach((insight, index) => {
+        addText(`${index + 1}. ${insight}`, 12);
+    });
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    addText("Conclusion", 16);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+    addText(result.aiResponse.conclusion, 12);
+
+    if (result.aiResponse.sources && result.aiResponse.sources.length > 0) {
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        addText("Sources", 16);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        result.aiResponse.sources.forEach(source => {
+            addText(`${source.title}: ${source.url}`, 10);
+        });
+    }
+
+    doc.save(`${result.aiResponse.title.replace(/ /g, "_")}.pdf`);
+    toast({ title: "Downloading PDF..." });
+  };
 
   const fullText = `
 Title: ${result.aiResponse.title}
@@ -158,6 +227,10 @@ ${result.aiResponse.sources?.map(source => `- ${source.title}: ${source.url}`).j
                     <Clipboard className="mr-2 h-4 w-4" />
                     Copy
                 </Button>
+                <Button variant="outline" size="sm" onClick={handleDownload}>
+                    <Download className="mr-2 h-4 w-4" />
+                    Download
+                </Button>
             </div>
         </div>
         <p className="text-lg text-muted-foreground">
@@ -169,7 +242,7 @@ ${result.aiResponse.sources?.map(source => `- ${source.title}: ${source.url}`).j
 
       <main className="space-y-8">
         <Card>
-          <CardContent className="space-y-12">
+          <CardContent className="space-y-12 p-6 md:p-8">
             {/* Introduction */}
             <section className="space-y-4">
               <h2 className="flex items-center gap-3 text-2xl font-bold text-foreground">

@@ -114,13 +114,13 @@ export default function SignupPage() {
   }
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md bg-[#0f172a] border-[#1f2933]">
       <CardHeader className="text-center">
         <div className="flex justify-center mb-4">
             <BrainCircuit className="h-10 w-10 text-primary" />
         </div>
-        <CardTitle className="text-2xl font-bold">ReAct-AI</CardTitle>
-        <CardDescription>Create an account to get started.</CardDescription>
+        <CardTitle className="text-2xl font-bold font-headline text-white">ReAct-AI</CardTitle>
+        <CardDescription className="text-[#9ca3af]">Create an account to get started.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -130,7 +130,7 @@ export default function SignupPage() {
               name="displayName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Display Name</FormLabel>
+                  <FormLabel className="text-[#e5e7eb]">Display Name</FormLabel>
                   <FormControl>
                     <Input placeholder="John Doe" {...field} disabled={isLoading || isGoogleLoading}/>
                   </FormControl>
@@ -143,7 +143,7 @@ export default function SignupPage() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="text-[#e5e7eb]">Email</FormLabel>
                   <FormControl>
                     <Input placeholder="name@example.com" {...field} disabled={isLoading || isGoogleLoading}/>
                   </FormControl>
@@ -156,7 +156,7 @@ export default function SignupPage() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel className="text-[#e5e7eb]">Password</FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="••••••••" {...field} disabled={isLoading || isGoogleLoading}/>
                   </FormControl>
@@ -169,7 +169,7 @@ export default function SignupPage() {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
+                  <FormLabel className="text-[#e5e7eb]">Confirm Password</FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="••••••••" {...field} disabled={isLoading || isGoogleLoading}/>
                   </FormControl>
@@ -177,7 +177,7 @@ export default function SignupPage() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full" disabled={isLoading || isGoogleLoading}>
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" disabled={isLoading || isGoogleLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Create Account
             </Button>

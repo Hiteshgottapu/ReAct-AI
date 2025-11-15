@@ -57,8 +57,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   
   if (loading && pathname !== '/') {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div className="flex h-screen items-center justify-center bg-[#020617]">
+        <Loader2 className="h-8 w-8 animate-spin text-[#38bdf8]" />
       </div>
     );
   }
@@ -66,18 +66,23 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   // Render a simplified layout for the unauthenticated landing page
   if (!user && pathname === '/') {
     return (
-        <div className="flex min-h-screen flex-col">
-            <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-sm sm:px-6">
+        <div className="flex min-h-screen flex-col bg-[#020617] font-body">
+            <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-[#1f2933] bg-[#0f172a]/80 px-4 backdrop-blur-sm sm:px-6">
                  <Link href="/" className="flex items-center gap-2">
-                    <BrainCircuit className="h-6 w-6 text-primary" />
-                    <h1 className="text-lg font-bold">
-                        Contextual Insights
+                    <BrainCircuit className="h-6 w-6 text-[#38bdf8]" />
+                    <h1 className="text-lg font-bold font-headline">
+                        ReAct-AI
                     </h1>
                 </Link>
                 <div className="flex items-center gap-4">
-                    <ThemeToggle />
-                     <Button asChild>
-                      <Link href="/login">Get Started</Link>
+                     <Button asChild variant="ghost" className="hidden sm:inline-flex">
+                        <Link href="/#features">Features</Link>
+                     </Button>
+                     <Button asChild variant="ghost" className="hidden sm:inline-flex">
+                        <Link href="/#how-it-works">How It Works</Link>
+                     </Button>
+                     <Button asChild size="sm" className="bg-[#38bdf8] hover:bg-[#38bdf8]/90 text-[#020617] rounded-full font-semibold uppercase tracking-wide">
+                      <Link href="/login">Login</Link>
                     </Button>
                 </div>
             </header>
@@ -92,13 +97,13 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     return (
       <ResearchHistoryProvider>
         <SidebarProvider>
-          <div className="flex min-h-screen bg-secondary/50">
-            <Sidebar className="border-r">
+          <div className="flex min-h-screen">
+            <Sidebar className="border-r border-[#1f2933]">
               <SidebarHeader>
                 <div className="flex items-center gap-2 p-2">
-                    <BrainCircuit className="h-6 w-6 text-primary" />
-                    <h1 className="text-lg font-bold group-data-[collapsible=icon]:hidden">
-                        Contextual Insights
+                    <BrainCircuit className="h-6 w-6 text-[#38bdf8]" />
+                    <h1 className="text-lg font-bold group-data-[collapsible=icon]:hidden font-headline">
+                        ReAct-AI
                     </h1>
                 </div>
               </SidebarHeader>
@@ -144,15 +149,14 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
               </SidebarFooter>
             </Sidebar>
             <div className="flex flex-1 flex-col">
-              <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-sm sm:px-6">
+              <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-[#1f2933] bg-background/80 px-4 backdrop-blur-sm sm:px-6">
                 <div className="flex items-center gap-2">
                     <SidebarTrigger className="md:hidden" />
-                    <h2 className="text-xl font-semibold">
+                    <h2 className="text-xl font-semibold font-headline">
                       {getPageTitle(pathname)}
                     </h2>
                 </div>
                 <div className="flex items-center gap-4">
-                  <ThemeToggle />
                   <UserNav />
                 </div>
               </header>

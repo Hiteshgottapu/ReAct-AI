@@ -104,13 +104,13 @@ export default function LoginPage() {
   }
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md bg-[#0f172a] border-[#1f2933]">
       <CardHeader className="text-center">
         <div className="flex justify-center mb-4">
             <BrainCircuit className="h-10 w-10 text-primary" />
         </div>
-        <CardTitle className="text-2xl font-bold">ReAct-AI</CardTitle>
-        <CardDescription>Welcome back! Sign in to your account.</CardDescription>
+        <CardTitle className="text-2xl font-bold font-headline text-white">ReAct-AI</CardTitle>
+        <CardDescription className="text-[#9ca3af]">Welcome back! Sign in to your account.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -120,7 +120,7 @@ export default function LoginPage() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="text-[#e5e7eb]">Email</FormLabel>
                   <FormControl>
                     <Input placeholder="name@example.com" {...field} disabled={isLoading || isGoogleLoading}/>
                   </FormControl>
@@ -134,7 +134,7 @@ export default function LoginPage() {
               render={({ field }) => (
                 <FormItem>
                   <div className="flex items-center justify-between">
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel className="text-[#e5e7eb]">Password</FormLabel>
                     <Link href="#" className="text-sm font-medium text-primary hover:underline">
                       Forgot password?
                     </Link>
@@ -146,7 +146,7 @@ export default function LoginPage() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full" disabled={isLoading || isGoogleLoading}>
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" disabled={isLoading || isGoogleLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Sign In
             </Button>

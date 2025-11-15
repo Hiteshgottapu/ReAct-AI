@@ -14,14 +14,14 @@ export function Footer() {
     };
 
     return (
-        <footer className="bg-secondary/50 text-secondary-foreground mt-auto w-full">
+        <footer className="bg-[#0f172a]/50 text-secondary-foreground border-t border-[#1f2933] mt-auto w-full">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {/* Branding Section */}
                     <div className="space-y-4">
                         <Link href="/" className="flex items-center gap-2">
                             <BrainCircuit className="h-8 w-8 text-primary" />
-                            <span className="text-xl font-bold">ReAct-AI</span>
+                            <span className="text-xl font-bold font-headline">ReAct-AI</span>
                         </Link>
                         <p className="text-sm text-muted-foreground">
                             Powered by Gemini – Built for Curious Minds
@@ -30,17 +30,17 @@ export function Footer() {
 
                     {/* Links Section */}
                     <div className="space-y-4">
-                        <h3 className="font-semibold uppercase tracking-wider">Links</h3>
+                        <h3 className="font-semibold uppercase tracking-wider text-muted-foreground">Links</h3>
                         <ul className="space-y-2 text-sm">
-                            <li><Link href="/" className="text-muted-foreground hover:text-primary transition-colors">Home</Link></li>
-                            <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">About</Link></li>
-                            <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">Contact</Link></li>
+                            <li><Link href="/" className="text-foreground hover:text-primary transition-colors">Home</Link></li>
+                            <li><Link href="#" className="text-foreground hover:text-primary transition-colors">About</Link></li>
+                            <li><Link href="#" className="text-foreground hover:text-primary transition-colors">Contact</Link></li>
                         </ul>
                     </div>
                     
                     {/* Social Media Section */}
                     <div className="space-y-4">
-                        <h3 className="font-semibold uppercase tracking-wider">Follow Us</h3>
+                        <h3 className="font-semibold uppercase tracking-wider text-muted-foreground">Follow Us</h3>
                         <div className="flex items-center space-x-4">
                            <a href="https://github.com/Hiteshgottapu/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                                 <Github className="h-6 w-6" />

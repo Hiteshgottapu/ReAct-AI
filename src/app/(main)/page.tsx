@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, BookOpen, Atom, PenSquare, Share2 } from 'lucide-react';
+import { ArrowRight, Zap, Link2, BarChart3, Shield, Star } from 'lucide-react';
 import Image from 'next/image';
 
 const FeatureCard = ({
@@ -15,88 +15,127 @@ const FeatureCard = ({
   title: string;
   description: string;
 }) => (
-  <div className="bg-card/50 rounded-xl border border-border/50 p-6 text-center shadow-sm transition-all hover:shadow-lg hover:-translate-y-1">
-    <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
-      <Icon className="h-8 w-8" />
+  <div className="bg-[#0f172a] border border-[#1f2933] rounded-lg p-8 transition-all hover:border-[#38bdf8]/50 hover:-translate-y-1">
+    <div className="bg-[#38bdf8]/10 w-14 h-14 rounded-lg flex items-center justify-center mb-4">
+      <Icon size={28} className="text-[#38bdf8]" />
     </div>
-    <h3 className="text-xl font-bold">{title}</h3>
-    <p className="mt-2 text-muted-foreground">{description}</p>
+    <h3 className="text-xl font-bold mb-3 text-[#e5e7eb]">{title}</h3>
+    <p className="text-[#9ca3af]">
+      {description}
+    </p>
   </div>
 );
 
+const HowItWorksStep = ({
+  step,
+  title,
+  description,
+}: {
+  step: string;
+  title: string;
+  description: string;
+}) => (
+    <div className="bg-[#0f172a]/50 border border-[#1f2933] rounded-lg p-6 text-center">
+        <div className="text-4xl font-bold text-[#38bdf8] mb-2">{step}</div>
+        <h4 className="font-bold mb-2 text-[#e5e7eb] uppercase tracking-wider">{title}</h4>
+        <p className="text-[#9ca3af] text-sm">{description}</p>
+    </div>
+)
+
 export default function LandingPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="relative overflow-hidden py-24 sm:py-32">
-           <div
-            aria-hidden="true"
-            className="absolute -top-1/2 left-1/2 -z-10 h-[200%] w-[200%] -translate-x-1/2 bg-[radial-gradient(50%_50%_at_50%_50%,_#F0F4F8_0%,_rgba(255,255,255,0)_100%)] dark:bg-[radial-gradient(50%_50%_at_50%_50%,_#020817_0%,_rgba(2,8,23,0)_100%)]"
-          />
-          <div className="container z-10 grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-            <div className="max-w-xl text-center lg:text-left">
-              <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
-                ReAct-AI: Your AI-Powered Research Assistant
-              </h1>
-              <p className="mt-6 text-lg leading-8 text-muted-foreground">
-                Turn hours of research into minutes. Our AI assistant analyzes articles, videos, and documents to deliver structured insights, so you can focus on what matters.
-              </p>
-              <div className="mt-10 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
-                <Button asChild size="lg">
-                  <Link href="/signup">
-                    Try for Free <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="lg">
-                  <Link href="#">Schedule Demo</Link>
-                </Button>
-              </div>
-            </div>
-            <div className="flex items-center justify-center">
-              <Image
-                src="https://picsum.photos/seed/ai-robot/600/400"
-                alt="AI assistant robot"
-                width={600}
-                height={400}
-                className="rounded-lg shadow-2xl"
-                data-ai-hint="robot future"
-              />
-            </div>
-          </div>
-        </section>
+    <div className="min-h-screen bg-[#020617] text-[#e5e7eb] font-body">
+      
+      {/* Navigation - Integrated into Main Layout */}
+      
+      {/* Hero Section */}
+      <section className="relative overflow-hidden pt-24 pb-20 sm:pt-32 sm:pb-28 text-center">
+          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#020617] via-transparent to-[#020617]"></div>
+          <div className="absolute top-0 left-0 -z-10 h-64 w-64 bg-gradient-to-tr from-[#6366f1]/20 to-transparent rounded-full blur-3xl opacity-50 -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute bottom-0 right-0 -z-10 h-64 w-64 bg-gradient-to-bl from-[#38bdf8]/20 to-transparent rounded-full blur-3xl opacity-50 translate-x-1/2 translate-y-1/2"></div>
 
-        {/* Features Section */}
-        <section className="py-24 sm:py-32 bg-secondary/50">
-          <div className="container">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                Everything you need to accelerate your research
-              </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
-                From literature reviews to collaborative summaries, we've got you covered.
-              </p>
+        <div className="container px-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 leading-tight font-headline">
+                Research That <span className="text-[#38bdf8]">Thinks for You</span>
+            </h1>
+            <p className="text-lg md:text-xl text-[#9ca3af] mb-8 max-w-3xl mx-auto">
+                Submit any research question or link. ReAct-AI analyzes YouTube videos, scrapes web content, 
+                and generates structured summaries in seconds—powered by Gemini AI.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <Button 
+                    asChild
+                    size="lg" 
+                    className="bg-[#38bdf8] hover:bg-[#38bdf8]/90 text-[#020617] px-8 py-3 rounded-full font-bold uppercase tracking-wide transition-transform hover:scale-105"
+                >
+                    <Link href="/signup">
+                        Try for Free <ArrowRight size={20} className="ml-2" />
+                    </Link>
+                </Button>
             </div>
-            <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              <FeatureCard
-                icon={BookOpen}
-                title="Intelligent Literature Review"
-                description="Process and understand complex topics from multiple sources with AI-driven analysis."
-              />
-              <FeatureCard
-                icon={PenSquare}
-                title="Real-Time Citation Suggestions"
-                description="Get accurate citation suggestions as you work, saving you time and effort."
-              />
-              <FeatureCard
-                icon={Share2}
-                title="Collaborative Workspace"
-                description="Work with your team in a shared space to compile and refine research findings."
-              />
-            </div>
+            <p className="text-[#9ca3af] text-sm flex items-center justify-center gap-2">
+                <Star size={16} className="text-yellow-400" /> Used by 500+ researchers and students
+            </p>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="py-20 sm:py-24 bg-[#0f172a]/50 border-y border-[#1f2933]">
+        <div className="container px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 font-headline">What ReAct-AI Does</h2>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <FeatureCard 
+              icon={Zap}
+              title="YouTube Analysis"
+              description="Paste any YouTube link. ReAct-AI transcribes, analyzes, and summarizes 30-min videos in 90 seconds."
+            />
+            <FeatureCard 
+              icon={Link2}
+              title="Web Content Scraping"
+              description="Submit any website URL. We extract content, analyze structure, and generate insights instantly."
+            />
+            <FeatureCard 
+              icon={BarChart3}
+              title="Research History"
+              description="All your research saved securely. Search, filter, and revisit past analyses anytime you want."
+            />
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section id="how-it-works" className="py-20 sm:py-24">
+        <div className="container px-6">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 font-headline">The ReAct Paradigm</h2>
+            
+            <div className="grid md:grid-cols-4 gap-6">
+                <HowItWorksStep step="1" title="Reason" description="AI decides: should I search this link or use past research?" />
+                <HowItWorksStep step="2" title="Act" description="Fetches data from YouTube transcripts, web pages, or its memory." />
+                <HowItWorksStep step="3" title="Generate" description="Gemini AI synthesizes findings into structured summaries." />
+                <HowItWorksStep step="4" title="Store" description="Results saved to your personal history for future reference." />
+            </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 text-center border-t border-[#1f2933] bg-[#0f172a]/50">
+        <div className="container px-6">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 font-headline">Ready to Research Smarter?</h2>
+            <p className="text-lg text-[#9ca3af] mb-8">Sign up free. No credit card needed.</p>
+            
+            <Button 
+                asChild
+                size="lg" 
+                className="bg-[#38bdf8] hover:bg-[#38bdf8]/90 text-[#020617] px-8 py-3 rounded-full font-bold uppercase tracking-wide transition-transform hover:scale-105"
+            >
+                <Link href="/signup">
+                    Get Started Now <ArrowRight size={20} className="ml-2"/>
+                </Link>
+            </Button>
+        </div>
+      </section>
     </div>
   );
 }

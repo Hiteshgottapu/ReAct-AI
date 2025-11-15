@@ -14,7 +14,7 @@ export type LinkType =
   | 'news'
   | 'unknown';
 
-export function detectLinkType(url: string): LinkType {
+export async function detectLinkType(url: string): Promise<LinkType> {
   const urlLower = url.toLowerCase();
   
   if (urlLower.includes('youtube.com') || urlLower.includes('youtu.be')) {
@@ -132,7 +132,7 @@ async function extractWebContent(url: string): Promise<string> {
 
 
 export async function extractContent(url: string): Promise<{content: string, type: LinkType}> {
-    const type = detectLinkType(url);
+    const type = await detectLinkType(url);
     let content: string;
     
     switch (type) {

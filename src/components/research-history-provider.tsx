@@ -4,6 +4,43 @@ import { createContext, useState, useCallback, ReactNode } from 'react';
 import type { ResearchResult } from '@/lib/types';
 import { useAuth } from '@/hooks/use-auth';
 
+// --- E2EE Simulation ---
+// In a real E2EE implementation, you would use the Web Crypto API
+// to generate, store, and use cryptographic keys to encrypt/decrypt data.
+
+// This is a placeholder to demonstrate the concept.
+const encrypt = (text: string): string => {
+  if (!text) return text;
+  return text.split('').reverse().join('');
+};
+
+const decrypt = (text: string): string => {
+  if (!text) return text;
+  return text.split('').reverse().join('');
+};
+
+const encryptAiResponse = (response: ResearchResult['aiResponse']) => {
+  return {
+    ...response,
+    title: encrypt(response.title),
+    introduction: encrypt(response.introduction),
+    keyInsights: response.keyInsights.map(encrypt),
+    conclusion: encrypt(response.conclusion),
+    // sources and tags are less sensitive and might not be encrypted
+  };
+};
+
+const decryptAiResponse = (response: ResearchResult['aiResponse']) => {
+  return {
+    ...response,
+    title: decrypt(response.title),
+    introduction: decrypt(response.introduction),
+    keyInsights: response.keyInsights.map(decrypt),
+    conclusion: decrypt(response.conclusion),
+  };
+};
+// --- End of E2EE Simulation ---
+
 interface ResearchHistoryContextType {
   researchHistory: ResearchResult[];
   addResearchResult: (resultData: Omit<ResearchResult, 'researchId' | 'timestamp' | 'userId'>) => Promise<string | null>;
@@ -17,6 +54,7 @@ export const ResearchHistoryContext = createContext<ResearchHistoryContextType |
 
 export function ResearchHistoryProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
+  // The state now stores encrypted data
   const [researchHistory, setResearchHistory] = useState<ResearchResult[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -25,8 +63,13 @@ export function ResearchHistoryProvider({ children }: { children: ReactNode }) {
       return null;
     }
     const newId = Date.now().toString();
+    
+    // Encrypt the data before storing it
+    const encryptedAiResponse = encryptAiResponse(resultData.aiResponse);
+    
     const newResult: ResearchResult = {
       ...resultData,
+      aiResponse: encryptedAiResponse,
       researchId: newId,
       userId: user.uid,
       timestamp: new Date(),
@@ -57,11 +100,25 @@ export function ResearchHistoryProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const getResearchById = useCallback((id: string) => {
-    return researchHistory.find(r => r.researchId === id);
+    const encryptedResult = researchHistory.find(r => r.researchId === id);
+    if (!encryptedResult) {
+      return undefined;
+    }
+    // Decrypt the data on-the-fly before returning it
+    return {
+      ...encryptedResult,
+      aiResponse: decryptAiResponse(encryptedResult.aiResponse),
+    };
   }, [researchHistory]);
+  
+  // We need a separate property for the history list that is decrypted
+  const decryptedResearchHistory = researchHistory.map(item => ({
+    ...item,
+    aiResponse: decryptAiResponse(item.aiResponse),
+  }));
 
   const value = {
-    researchHistory,
+    researchHistory: decryptedResearchHistory,
     addResearchResult,
     toggleBookmark,
     getResearchById,

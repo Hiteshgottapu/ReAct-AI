@@ -1,104 +1,102 @@
-"use client"
 
-import Link from "next/link";
-import { ArrowRight, BookMarked, Clock, Loader2, Search, History } from "lucide-react";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { ResearchForm } from "@/components/research/research-form";
-import { Badge } from "@/components/ui/badge";
-import { useResearchHistory } from "@/hooks/use-research-history";
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { ArrowRight, BookOpen, Atom, PenSquare, Share2 } from 'lucide-react';
+import Image from 'next/image';
 
-export default function DashboardPage() {
-  const { researchHistory, loading } = useResearchHistory();
-  const recentResearch = researchHistory.slice(0, 3);
+const FeatureCard = ({
+  icon: Icon,
+  title,
+  description,
+}: {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+}) => (
+  <div className="bg-card/50 rounded-xl border border-border/50 p-6 text-center shadow-sm transition-all hover:shadow-lg hover:-translate-y-1">
+    <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+      <Icon className="h-8 w-8" />
+    </div>
+    <h3 className="text-xl font-bold">{title}</h3>
+    <p className="mt-2 text-muted-foreground">{description}</p>
+  </div>
+);
 
+export default function LandingPage() {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-8 space-y-8 lg:space-y-0">
-      <div className="lg:col-span-2 space-y-8">
-        <section>
-          <h1 className="bg-gradient-to-r from-primary to-accent bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
-            ReAct-AI
-          </h1>
-          <p className="mt-4 text-lg text-muted-foreground md:text-xl">
-            Your personal AI research assistant. Unlock insights from any source.
-          </p>
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="relative overflow-hidden py-24 sm:py-32">
+           <div
+            aria-hidden="true"
+            className="absolute -top-1/2 left-1/2 -z-10 h-[200%] w-[200%] -translate-x-1/2 bg-[radial-gradient(50%_50%_at_50%_50%,_#F0F4F8_0%,_rgba(255,255,255,0)_100%)] dark:bg-[radial-gradient(50%_50%_at_50%_50%,_#020817_0%,_rgba(2,8,23,0)_100%)]"
+          />
+          <div className="container z-10 grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+            <div className="max-w-xl text-center lg:text-left">
+              <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
+                ReAct-AI: Your AI-Powered Research Assistant
+              </h1>
+              <p className="mt-6 text-lg leading-8 text-muted-foreground">
+                Turn hours of research into minutes. Our AI assistant analyzes articles, videos, and documents to deliver structured insights, so you can focus on what matters.
+              </p>
+              <div className="mt-10 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
+                <Button asChild size="lg">
+                  <Link href="/signup">
+                    Try for Free <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="lg">
+                  <Link href="#">Schedule Demo</Link>
+                </Button>
+              </div>
+            </div>
+            <div className="flex items-center justify-center">
+              <Image
+                src="https://picsum.photos/seed/ai-robot/600/400"
+                alt="AI assistant robot"
+                width={600}
+                height={400}
+                className="rounded-lg shadow-2xl"
+                data-ai-hint="robot future"
+              />
+            </div>
+          </div>
         </section>
 
-        <section>
-          <ResearchForm />
+        {/* Features Section */}
+        <section className="py-24 sm:py-32 bg-secondary/50">
+          <div className="container">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                Everything you need to accelerate your research
+              </h2>
+              <p className="mt-4 text-lg text-muted-foreground">
+                From literature reviews to collaborative summaries, we've got you covered.
+              </p>
+            </div>
+            <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+              <FeatureCard
+                icon={BookOpen}
+                title="Intelligent Literature Review"
+                description="Process and understand complex topics from multiple sources with AI-driven analysis."
+              />
+              <FeatureCard
+                icon={PenSquare}
+                title="Real-Time Citation Suggestions"
+                description="Get accurate citation suggestions as you work, saving you time and effort."
+              />
+              <FeatureCard
+                icon={Share2}
+                title="Collaborative Workspace"
+                description="Work with your team in a shared space to compile and refine research findings."
+              />
+            </div>
+          </div>
         </section>
-      </div>
-      
-      <aside className="lg:col-span-1 space-y-8">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold flex items-center gap-2">
-            <History className="h-6 w-6" />
-            Recent Research
-          </h2>
-          <Button variant="link" asChild>
-            <Link href="/profile">
-              View All <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-        {loading ? (
-          <div className="flex justify-center py-8">
-            <Loader2 className="h-8 w-8 animate-spin" />
-          </div>
-        ) : recentResearch.length > 0 ? (
-          <div className="space-y-6">
-            {recentResearch.map((item) => (
-              <Card key={item.researchId} className="flex flex-col transition-transform transform hover:scale-[1.02] hover:shadow-lg dark:hover:shadow-primary/10">
-                <CardHeader>
-                  {item.aiResponse.tags && item.aiResponse.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {item.aiResponse.tags.slice(0, 3).map((tag) => (
-                        <Badge key={tag} variant="outline">{tag}</Badge>
-                      ))}
-                    </div>
-                  )}
-                  <CardTitle className="line-clamp-2 pt-2">{item.aiResponse.title}</CardTitle>
-                  <CardDescription className="flex items-center gap-2 pt-2 text-sm">
-                    <Clock className="h-4 w-4" />
-                    <span>{item.timestamp.toLocaleDateString()}</span>
-                    {item.isBookmarked && <Badge variant="secondary" className="gap-1.5 pl-1.5"><BookMarked className="h-3 w-3"/>Bookmarked</Badge>}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <p className="line-clamp-3 text-sm text-muted-foreground">
-                    {item.aiResponse.introduction}
-                  </p>
-                </CardContent>
-                <CardFooter>
-                  <Button asChild className="w-full">
-                    <Link href={`/result/${item.researchId}`}>View Details</Link>
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <Card>
-            <CardContent className="py-10 text-center">
-              <div className="mb-4 flex justify-center">
-                <div className="rounded-full bg-secondary p-3">
-                  <Search className="h-6 w-6 text-muted-foreground" />
-                </div>
-              </div>
-              <p className="font-semibold">No Research Yet</p>
-              <p className="text-sm text-muted-foreground">Start a new research query to see your results here.</p>
-            </CardContent>
-          </Card>
-        )}
-      </aside>
+      </main>
     </div>
   );
 }

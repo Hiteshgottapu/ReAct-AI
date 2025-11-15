@@ -65,7 +65,7 @@ export default function SignupPage() {
 
   useEffect(() => {
     if (!loading && user) {
-      router.push('/');
+      router.push('/dashboard');
     }
   }, [user, loading, router]);
 
@@ -76,7 +76,7 @@ export default function SignupPage() {
       await updateProfile(userCredential.user, {
         displayName: values.displayName
       });
-      router.push('/');
+      router.push('/dashboard');
     } catch (error: any) {
        toast({
         variant: 'destructive',
@@ -93,7 +93,7 @@ export default function SignupPage() {
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-      router.push('/');
+      router.push('/dashboard');
     } catch (error: any) {
        toast({
         variant: 'destructive',

@@ -4,6 +4,7 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { YoutubeTranscript } from 'youtube-transcript';
+import puppeteer from 'puppeteer';
 
 export type LinkType = 
   | 'youtube'
@@ -75,6 +76,7 @@ async function extractGitHubContent(url: string): Promise<string> {
     
     return `GitHub Repository: ${owner}/${repo}\n\n${response.data}`;
   } catch (error) {
+    // Fallback to dynamic content extraction if README fetch fails
     return await extractWebContent(url);
   }
 }
@@ -83,7 +85,8 @@ async function extractPDFContent(url: string): Promise<string> {
   return `PDF content extraction from ${url} (requires backend processing)`;
 }
 
-async function extractWebContent(url: string): Promise<string> {
+// Fast extraction for static sites (Cheerio)
+async function extractStaticContent(url: string): Promise<string> {
   try {
     const response = await axios.get(url, {
       timeout: 5000,
@@ -111,20 +114,86 @@ async function extractWebContent(url: string): Promise<string> {
       content = $('body').text();
     }
     
-    content = content
-      .replace(/\s+/g, ' ')
-      .trim()
-      .slice(0, 50000); 
+    return content.replace(/\s+/g, ' ').trim();
+  } catch (error: any) {
+     console.warn(`Static extraction failed for ${url}: ${error.message}`);
+     return ""; // Return empty string to trigger fallback
+  }
+}
+
+// Slow but thorough extraction for SPAs (Puppeteer)
+async function extractDynamicContent(url: string): Promise<string> {
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+    ],
+  });
+  
+  try {
+    const page = await browser.newPage();
+    
+    await page.setRequestInterception(true);
+    page.on('request', (req) => {
+      const resourceType = req.resourceType();
+      if (['image', 'stylesheet', 'font', 'media'].includes(resourceType)) {
+        req.abort();
+      } else {
+        req.continue();
+      }
+    });
+    
+    await page.setViewport({ width: 1920, height: 1080 });
+    
+    await page.goto(url, {
+      waitUntil: 'networkidle2',
+      timeout: 15000,
+    });
+    
+    await page.waitForTimeout(2000);
+    
+    const content = await page.evaluate(() => {
+      const unwanted = document.querySelectorAll('script, style, nav, footer, header, .ad, .advertisement');
+      unwanted.forEach(el => el.remove());
+      
+      const main = document.querySelector('main') || 
+                   document.querySelector('article') ||
+                   document.querySelector('.content') ||
+                   document.querySelector('body');
+      
+      return main?.innerText || '';
+    });
+    
+    await browser.close();
     
     if (!content || content.length < 100) {
-        // Fallback to just text
-        content = $('body').text().replace(/\s+/g, ' ').trim().slice(0, 50000);
-        if (!content || content.length < 100) {
-            throw new Error('Could not extract meaningful content');
-        }
+      throw new Error('Could not extract meaningful content from rendered page');
     }
     
-    return content;
+    return content.replace(/\s+/g, ' ').trim().slice(0, 50000);
+    
+  } catch (error) {
+    await browser.close();
+    throw error;
+  }
+}
+
+
+async function extractWebContent(url: string): Promise<string> {
+  try {
+    const staticContent = await extractStaticContent(url);
+    
+    if (staticContent && staticContent.length > 200) {
+      console.log('Static extraction succeeded:', url);
+      return staticContent.slice(0, 50000);
+    }
+    
+    console.warn('Static extraction failed or produced minimal content, trying headless browser:', url);
+    return await extractDynamicContent(url);
+    
   } catch (error: any) {
     throw new Error(`Failed to extract web content from ${url}: ${error.message}`);
   }

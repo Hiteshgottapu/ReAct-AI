@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { BrainCircuit, Loader2 } from "lucide-react"
+import { Loader2 } from "lucide-react"
 
 const signupSchema = z.object({
   displayName: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -114,13 +114,10 @@ export default function SignupPage() {
   }
 
   return (
-    <Card className="w-full max-w-md bg-[#0f172a] border-[#1f2933]">
+    <Card className="w-full max-w-md">
       <CardHeader className="text-center">
-        <div className="flex justify-center mb-4">
-            <BrainCircuit className="h-10 w-10 text-primary" />
-        </div>
-        <CardTitle className="text-2xl font-bold font-headline text-white">ReAct-AI</CardTitle>
-        <CardDescription className="text-[#9ca3af]">Create an account to get started.</CardDescription>
+        <CardTitle className="text-2xl font-bold text-foreground">Create an Account</CardTitle>
+        <CardDescription className="text-muted-foreground">Get started for free. No credit card required.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -130,7 +127,7 @@ export default function SignupPage() {
               name="displayName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[#e5e7eb]">Display Name</FormLabel>
+                  <FormLabel className="text-foreground">Display Name</FormLabel>
                   <FormControl>
                     <Input placeholder="John Doe" {...field} disabled={isLoading || isGoogleLoading}/>
                   </FormControl>
@@ -143,7 +140,7 @@ export default function SignupPage() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[#e5e7eb]">Email</FormLabel>
+                  <FormLabel className="text-foreground">Email</FormLabel>
                   <FormControl>
                     <Input placeholder="name@example.com" {...field} disabled={isLoading || isGoogleLoading}/>
                   </FormControl>
@@ -156,7 +153,7 @@ export default function SignupPage() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[#e5e7eb]">Password</FormLabel>
+                  <FormLabel className="text-foreground">Password</FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="••••••••" {...field} disabled={isLoading || isGoogleLoading}/>
                   </FormControl>
@@ -169,7 +166,7 @@ export default function SignupPage() {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[#e5e7eb]">Confirm Password</FormLabel>
+                  <FormLabel className="text-foreground">Confirm Password</FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="••••••••" {...field} disabled={isLoading || isGoogleLoading}/>
                   </FormControl>
@@ -177,7 +174,7 @@ export default function SignupPage() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" disabled={isLoading || isGoogleLoading}>
+            <Button type="submit" className="w-full font-semibold" disabled={isLoading || isGoogleLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Create Account
             </Button>

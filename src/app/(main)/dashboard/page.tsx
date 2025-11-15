@@ -25,7 +25,7 @@ export default function DashboardPage() {
     <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-8 space-y-8 lg:space-y-0">
       <div className="lg:col-span-2 space-y-8">
         <section>
-          <h1 className="bg-gradient-to-r from-primary to-accent bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
+          <h1 className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
             Welcome to ReAct-AI
           </h1>
           <p className="mt-4 text-lg text-muted-foreground md:text-xl">
@@ -57,7 +57,7 @@ export default function DashboardPage() {
         ) : recentResearch.length > 0 ? (
           <div className="space-y-6">
             {recentResearch.map((item) => (
-              <Card key={item.researchId} className="flex flex-col transition-transform transform hover:scale-[1.02] hover:shadow-lg dark:hover:shadow-primary/10">
+              <Card key={item.researchId} className="flex flex-col transition-all duration-300 ease-in-out hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1">
                 <CardHeader>
                   {item.aiResponse.tags && item.aiResponse.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2">
@@ -66,8 +66,8 @@ export default function DashboardPage() {
                       ))}
                     </div>
                   )}
-                  <CardTitle className="line-clamp-2 pt-2">{item.aiResponse.title}</CardTitle>
-                  <CardDescription className="flex items-center gap-2 pt-2 text-sm">
+                  <CardTitle className="line-clamp-2 pt-2 text-foreground">{item.aiResponse.title}</CardTitle>
+                  <CardDescription className="flex items-center gap-2 pt-2 text-sm text-muted-foreground">
                     <Clock className="h-4 w-4" />
                     <span>{item.timestamp.toLocaleDateString()}</span>
                     {item.isBookmarked && <Badge variant="secondary" className="gap-1.5 pl-1.5"><BookMarked className="h-3 w-3"/>Bookmarked</Badge>}
@@ -90,7 +90,7 @@ export default function DashboardPage() {
           <Card>
             <CardContent className="py-10 text-center">
               <div className="mb-4 flex justify-center">
-                <div className="rounded-full bg-secondary p-3">
+                <div className="rounded-full bg-accent p-3">
                   <Search className="h-6 w-6 text-muted-foreground" />
                 </div>
               </div>

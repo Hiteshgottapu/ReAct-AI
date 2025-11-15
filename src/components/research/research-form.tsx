@@ -114,7 +114,7 @@ export function ResearchForm() {
   }
 
   return (
-    <Card className="shadow-lg dark:shadow-primary/10">
+    <Card className="bg-accent border-border">
       <CardHeader>
         <CardTitle className="flex items-center gap-3 text-2xl">
           <FileText className="h-6 w-6" />
@@ -136,7 +136,7 @@ export function ResearchForm() {
                   <FormControl>
                     <Textarea
                       placeholder="e.g., The future of renewable energy sources and their impact on global economies..."
-                      className="min-h-[120px] text-base"
+                      className="min-h-[120px]"
                       {...field}
                     />
                   </FormControl>
@@ -161,7 +161,6 @@ export function ResearchForm() {
                             <Input
                               placeholder="https://example.com"
                               {...field}
-                              className="text-base"
                             />
                           </FormControl>
                           <Button
@@ -170,7 +169,7 @@ export function ResearchForm() {
                             size="icon"
                             onClick={() => remove(index)}
                             disabled={fields.length <= 1}
-                            className="hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+                            className="text-muted-foreground hover:text-destructive"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -192,7 +191,7 @@ export function ResearchForm() {
               </Button>
             </div>
 
-            <Button type="submit" disabled={isLoading} size="lg" className="w-full text-lg">
+            <Button type="submit" disabled={isLoading} size="lg" className="w-full text-base font-bold">
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

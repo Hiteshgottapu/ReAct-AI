@@ -59,11 +59,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     <ResearchHistoryProvider>
       <SidebarProvider>
         <div className="flex min-h-screen">
-          <Sidebar className="border-r border-border">
+          <Sidebar className="border-r-0 bg-card">
             <SidebarHeader>
               <div className="flex items-center gap-2 p-2">
                   <BrainCircuit className="h-6 w-6 text-primary" />
-                  <h1 className="text-lg font-bold group-data-[collapsible=icon]:hidden font-headline">
+                  <h1 className="text-lg font-bold group-data-[collapsible=icon]:hidden text-foreground">
                       ReAct-AI
                   </h1>
               </div>
@@ -110,10 +110,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             </SidebarFooter>
           </Sidebar>
           <div className="flex flex-1 flex-col">
-            <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-border bg-background/80 px-4 backdrop-blur-sm sm:px-6">
+            <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-border bg-card/80 px-4 backdrop-blur-sm sm:px-6">
               <div className="flex items-center gap-2">
                   <SidebarTrigger className="md:hidden" />
-                  <h2 className="text-xl font-semibold font-headline">
+                  <h2 className="text-xl font-semibold text-foreground">
                     {getPageTitle(pathname)}
                   </h2>
               </div>

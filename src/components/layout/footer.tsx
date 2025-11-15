@@ -14,14 +14,14 @@ export function Footer() {
     };
 
     return (
-        <footer className="bg-[#0f172a]/50 text-secondary-foreground border-t border-[#1f2933] mt-auto w-full">
+        <footer className="bg-card/50 text-secondary-foreground border-t border-border mt-auto w-full">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {/* Branding Section */}
                     <div className="space-y-4">
                         <Link href="/" className="flex items-center gap-2">
                             <BrainCircuit className="h-8 w-8 text-primary" />
-                            <span className="text-xl font-bold font-headline">ReAct-AI</span>
+                            <span className="text-xl font-bold text-foreground">ReAct-AI</span>
                         </Link>
                         <p className="text-sm text-muted-foreground">
                             Powered by Gemini – Built for Curious Minds

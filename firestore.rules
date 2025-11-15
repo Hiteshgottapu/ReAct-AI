@@ -6,14 +6,10 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    // This rule allows a user to read and write any document inside their own user folder.
+    // The `read` permission includes `get` and `list` operations.
     match /users/{userId}/{document=**} {
-      // Users can only access their own documents
       allow read, write: if isAuthenticated() && request.auth.uid == userId;
-    }
-
-    match /users/{userId}/researchHistory/{researchId} {
-      // Allow list operations for a user's own research history
-      allow list: if isAuthenticated() && request.auth.uid == userId;
     }
   }
 }

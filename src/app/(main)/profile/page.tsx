@@ -77,10 +77,11 @@ function ProfileForm() {
                 description: "Your new profile picture has been saved.",
             });
         } catch (error: any) {
+            console.error("Avatar upload error:", error);
             toast({
                 variant: "destructive",
                 title: "Upload failed",
-                description: error.message || "Could not upload your avatar.",
+                description: error.message || "Could not upload your avatar. Please check storage permissions.",
             });
         } finally {
             setIsUploading(false);

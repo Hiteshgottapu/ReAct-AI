@@ -2,7 +2,7 @@
 "use client"
 
 import Link from "next/link";
-import { ArrowRight, BookMarked, Clock, Loader2, Search, History } from "lucide-react";
+import { ArrowRight, BookMarked, Clock, Loader2, Search, History, BarChart } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -67,13 +67,11 @@ export default function DashboardPage() {
                     </div>
                   )}
                   <CardTitle className="line-clamp-2 pt-2 text-foreground">{item.aiResponse.title}</CardTitle>
-                  <CardDescription asChild>
-                     <div className="flex items-center gap-2 pt-2 text-sm text-muted-foreground">
+                   <div className="flex items-center gap-2 pt-2 text-sm text-muted-foreground">
                         <Clock className="h-4 w-4" />
                         <span>{item.timestamp.toLocaleDateString()}</span>
                         {item.isBookmarked && <Badge variant="secondary" className="gap-1.5 pl-1.5"><BookMarked className="h-3 w-3"/>Bookmarked</Badge>}
                     </div>
-                  </CardDescription>
                 </CardHeader>
                 <CardContent className="flex-grow">
                   <p className="line-clamp-3 text-sm text-muted-foreground">

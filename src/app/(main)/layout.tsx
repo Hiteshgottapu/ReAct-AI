@@ -3,7 +3,7 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { BookMarked, Home, Settings, User, Loader2, BrainCircuit } from "lucide-react"
+import { BookMarked, Home, Settings, User, Loader2, BrainCircuit, BarChart } from "lucide-react"
 import { useEffect } from "react"
 import { useAuth } from "@/hooks/use-auth"
 
@@ -43,6 +43,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     if (path.startsWith("/bookmarks")) return "Bookmarks";
     if (path.startsWith("/profile")) return "Profile";
     if (path.startsWith("/settings")) return "Settings";
+    if (path.startsWith("/analysis")) return "Analysis";
     const segment = path.split('/')[1];
     return segment.charAt(0).toUpperCase() + segment.slice(1);
   }
@@ -78,7 +79,15 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                  <SidebarMenuItem>
+                 <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={isActive("/analysis")}>
+                    <Link href="/analysis">
+                      <BarChart />
+                      <span>Analysis</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
                   <SidebarMenuButton asChild isActive={isActive("/profile")}>
                     <Link href="/profile">
                       <User />

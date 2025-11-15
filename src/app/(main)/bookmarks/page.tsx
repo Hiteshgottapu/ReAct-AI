@@ -1,3 +1,4 @@
+
 "use client"
 
 import Link from "next/link"
@@ -34,7 +35,7 @@ export default function BookmarksPage() {
       ) : bookmarkedItems.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {bookmarkedItems.map((item) => (
-            <Card key={item.researchId} className="flex flex-col transition-transform transform hover:scale-[1.02] hover:shadow-lg dark:hover:shadow-primary/10">
+            <Card key={item.researchId} className="flex flex-col transition-all duration-300 ease-in-out hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1">
               <CardHeader>
                 {item.aiResponse.tags && item.aiResponse.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2">

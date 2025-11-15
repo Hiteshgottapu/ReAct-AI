@@ -67,9 +67,9 @@ export default function DashboardPage() {
                     </div>
                   )}
                   <CardTitle className="line-clamp-2 pt-2 text-foreground">{item.aiResponse.title}</CardTitle>
-                   <div className="flex items-center gap-2 pt-2 text-sm text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        <span>{item.timestamp.toLocaleDateString()}</span>
+                   <div className="flex items-center gap-4 pt-2 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1.5"><Clock className="h-4 w-4" />
+                        <span>{item.timestamp.toLocaleDateString()}</span></div>
                         {item.isBookmarked && <Badge variant="secondary" className="gap-1.5 pl-1.5"><BookMarked className="h-3 w-3"/>Bookmarked</Badge>}
                     </div>
                 </CardHeader>

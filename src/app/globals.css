@@ -47,21 +47,20 @@
     /* The values are already set for a dark theme in :root */
   }
 
-  /* Fallback light theme, if ever enabled */
   .light {
-    --background: 0 0% 100%;
-    --foreground: 222 47.4% 11.2%;
+    --background: 220 14% 96%; /* #f4f5f7 */
+    --foreground: 222 47.4% 11.2%; /* #111827 */
 
-    --card: 0 0% 100%;
+    --card: 0 0% 100%; /* #ffffff */
     --card-foreground: 222 47.4% 11.2%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 222 47.4% 11.2%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 217 91% 60%; /* #2563eb */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
+    --secondary: 210 40% 96.1%; /* #f1f5f9 */
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
@@ -73,15 +72,15 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
+    --border: 214.3 31.8% 91.4%; /* #e5e7eb */
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 47.4% 11.2%;
+    --ring: 217 91% 60%;
 
-    --sidebar-background: 0 0% 98%;
+    --sidebar-background: 220 14% 96%; /* same as main background */
     --sidebar-foreground: 222 47.4% 11.2%;
     --sidebar-border: 214.3 31.8% 91.4%;
-    --sidebar-ring: 222.2 47.4% 11.2%;
-    --sidebar-accent: 210 40% 96.1%;
+    --sidebar-ring: 217 91% 60%;
+    --sidebar-accent: 210 40% 93%; /* a bit darker than mute */
     --sidebar-accent-foreground: 222.2 47.4% 11.2%;
   }
 }

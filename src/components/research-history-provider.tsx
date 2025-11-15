@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -17,6 +18,11 @@ import {
   doc,
   serverTimestamp,
   Timestamp,
+  limit,
+  startAfter,
+  getDocs,
+  DocumentData,
+  QueryDocumentSnapshot,
 } from 'firebase/firestore';
 import { useAuth } from '@/hooks/use-auth';
 import { db } from '@/lib/firebase';
@@ -25,17 +31,14 @@ import { errorEmitter } from '@/lib/error-emitter';
 import { FirestorePermissionError } from '@/lib/errors';
 
 // --- E2EE Simulation ---
-// In a real application, use a robust library like tweetnacl-js or libsodium.js.
-// The key should be derived from user password or stored securely, not hardcoded.
 const encrypt = (text: string): string => {
   if (typeof text !== 'string' || !text) return text;
-  // This is a simple XOR cipher for demonstration purposes, NOT secure.
   const key = 'secret-key';
   let result = '';
   for (let i = 0; i < text.length; i++) {
     result += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
   }
-  return btoa(result); // Base64 encode to handle binary data
+  return btoa(result);
 };
 
 const decrypt = (text: string): string => {
@@ -49,7 +52,6 @@ const decrypt = (text: string): string => {
     }
     return result;
   } catch (e) {
-    // If decryption fails (e.g., already decrypted), return original text.
     return text;
   }
 };
@@ -61,7 +63,6 @@ const encryptAiResponse = (response: ResearchResult['aiResponse']) => {
     introduction: encrypt(response.introduction),
     keyInsights: response.keyInsights.map(encrypt),
     conclusion: encrypt(response.conclusion),
-    // Sources and tags are generally less sensitive, but can be encrypted too
   };
 };
 
@@ -89,29 +90,38 @@ interface ResearchHistoryContextType {
     feedbackScore: number
   ) => Promise<void>;
   loading: boolean;
+  hasMore: boolean;
+  loadMore: () => void;
 }
 
 export const ResearchHistoryContext = createContext<
   ResearchHistoryContextType | undefined
 >(undefined);
 
+const PAGE_SIZE = 10;
+
 export function ResearchHistoryProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [researchHistory, setResearchHistory] = useState<ResearchResult[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot<DocumentData> | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+
+  const researchHistoryRef = user ? collection(db, 'users', user.uid, 'researchHistory') : null;
 
   useEffect(() => {
-    if (!user) {
+    if (!user || !researchHistoryRef) {
       setResearchHistory([]);
       setLoading(false);
+      setHasMore(false);
       return;
     }
 
     setLoading(true);
-    const researchHistoryRef = collection(db, 'users', user.uid, 'researchHistory');
     const q = query(
       researchHistoryRef,
-      orderBy('timestamp', 'desc')
+      orderBy('timestamp', 'desc'),
+      limit(PAGE_SIZE)
     );
 
     const unsubscribe = onSnapshot(
@@ -122,11 +132,12 @@ export function ResearchHistoryProvider({ children }: { children: ReactNode }) {
           return {
             ...data,
             researchId: doc.id,
-            // Convert Firestore Timestamp to JS Date
             timestamp: (data.timestamp as Timestamp)?.toDate() || new Date(),
           } as ResearchResult;
         });
         setResearchHistory(history);
+        setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
+        setHasMore(snapshot.docs.length === PAGE_SIZE);
         setLoading(false);
       },
       (error) => {
@@ -142,14 +153,49 @@ export function ResearchHistoryProvider({ children }: { children: ReactNode }) {
     return () => unsubscribe();
   }, [user]);
 
+  const loadMore = useCallback(async () => {
+    if (!user || !researchHistoryRef || !lastDoc || !hasMore) return;
+
+    setLoading(true);
+    const q = query(
+        researchHistoryRef,
+        orderBy('timestamp', 'desc'),
+        startAfter(lastDoc),
+        limit(PAGE_SIZE)
+    );
+
+    try {
+        const snapshot = await getDocs(q);
+        const newHistory = snapshot.docs.map((doc) => {
+            const data = doc.data();
+            return {
+                ...data,
+                researchId: doc.id,
+                timestamp: (data.timestamp as Timestamp)?.toDate() || new Date(),
+            } as ResearchResult;
+        });
+        setResearchHistory((prev) => [...prev, ...newHistory]);
+        setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
+        setHasMore(snapshot.docs.length === PAGE_SIZE);
+    } catch (error) {
+         const permissionError = new FirestorePermissionError({
+          path: researchHistoryRef.path,
+          operation: 'list',
+        });
+        errorEmitter.emit('permission-error', permissionError);
+    } finally {
+        setLoading(false);
+    }
+}, [user, lastDoc, hasMore, researchHistoryRef]);
+
+
   const addResearchResult = useCallback(
     async (
       resultData: Omit<ResearchResult, 'researchId' | 'timestamp' | 'userId'>
     ): Promise<string | null> => {
-      if (!user) return null;
+      if (!user || !researchHistoryRef) return null;
 
       const encryptedAiResponse = encryptAiResponse(resultData.aiResponse);
-      const collectionRef = collection(db, 'users', user.uid, 'researchHistory');
       const dataToSave = {
         ...resultData,
         aiResponse: encryptedAiResponse,
@@ -158,15 +204,14 @@ export function ResearchHistoryProvider({ children }: { children: ReactNode }) {
       };
 
       try {
-        const docRef = await addDoc(collectionRef, dataToSave)
+        const docRef = await addDoc(researchHistoryRef, dataToSave)
           .catch(serverError => {
             const permissionError = new FirestorePermissionError({
-              path: collectionRef.path,
+              path: researchHistoryRef.path,
               operation: 'create',
               requestResourceData: dataToSave,
             });
             errorEmitter.emit('permission-error', permissionError);
-            // Re-throw to be caught by outer try/catch
             throw serverError;
           });
         return docRef.id;
@@ -175,7 +220,7 @@ export function ResearchHistoryProvider({ children }: { children: ReactNode }) {
         return null;
       }
     },
-    [user]
+    [user, researchHistoryRef]
   );
 
   const toggleBookmark = useCallback(
@@ -257,6 +302,8 @@ export function ResearchHistoryProvider({ children }: { children: ReactNode }) {
     getResearchById,
     updateFeedbackScore,
     loading,
+    hasMore,
+    loadMore,
   };
 
   return (

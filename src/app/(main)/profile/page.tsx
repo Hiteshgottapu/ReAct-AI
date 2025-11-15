@@ -1,10 +1,11 @@
 
 "use client"
 
-import { useState, ChangeEvent } from "react"
+import { useState, ChangeEvent, useCallback, Fragment } from "react"
 import Link from "next/link"
 import { ArrowRight, BookMarked, Clock, Edit, Save, Search, Loader2, Upload } from "lucide-react"
 import { updateProfile } from "firebase/auth"
+import React from 'react'
 
 import { useAuth } from "@/hooks/use-auth"
 import { useToast } from "@/hooks/use-toast"
@@ -49,7 +50,6 @@ function ProfileForm() {
     };
 
     const handleCancel = () => {
-        // Reset to original values. A more robust solution would store initial state when editing starts.
         setDisplayName(user?.displayName || "");
         setTitle("AI Researcher"); // Reset placeholder
         setBio("Passionate about the future of artificial intelligence and its impact on technology and society."); // Reset placeholder
@@ -156,10 +156,32 @@ function ProfileForm() {
     )
 }
 
+const ResearchHistoryItem = React.memo(function ResearchHistoryItem({ item }: { item: any }) {
+    return (
+        <div className="flex items-center justify-between rounded-lg border p-4">
+            <div className="space-y-2">
+                <Link href={`/result/${item.researchId}`} className="font-medium hover:underline">{item.aiResponse.title}</Link>
+                <p className="line-clamp-1 text-sm text-muted-foreground">{item.queryText}</p>
+                <div className="flex flex-wrap items-center gap-2">
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground"><Clock className="h-3 w-3" /> {item.timestamp.toLocaleDateString()}</span>
+                    {item.isBookmarked && <Badge variant="secondary" className="gap-1.5 pl-1.5"><BookMarked className="h-3 w-3" /> Bookmarked</Badge>}
+                    {item.aiResponse.tags?.slice(0, 3).map((tag:string) => <Badge key={tag} variant="outline">{tag}</Badge>)}
+                </div>
+            </div>
+            <Button variant="ghost" size="icon" asChild>
+                <Link href={`/result/${item.researchId}`}>
+                    <ArrowRight className="h-4 w-4" />
+                </Link>
+            </Button>
+        </div>
+    );
+});
+
+
 function ResearchHistoryList() {
+    const { researchHistory, loading, hasMore, loadMore } = useResearchHistory();
     const [filter, setFilter] = useState("all") // 'all' or 'bookmarked'
     const [searchTerm, setSearchTerm] = useState("")
-    const { researchHistory, loading } = useResearchHistory();
 
     const filteredHistory = researchHistory
         .filter(item => filter === "bookmarked" ? item.isBookmarked : true)
@@ -196,28 +218,25 @@ function ResearchHistoryList() {
                 </div>
 
                 <div className="space-y-4">
-                    {loading ? (
+                    {loading && filteredHistory.length === 0 ? (
                        <div className="flex justify-center py-8">
                            <Loader2 className="h-8 w-8 animate-spin" />
                        </div>
-                    ) : filteredHistory.length > 0 ? filteredHistory.map(item => (
-                        <div key={item.researchId} className="flex items-center justify-between rounded-lg border p-4">
-                            <div className="space-y-2">
-                                <Link href={`/result/${item.researchId}`} className="font-medium hover:underline">{item.aiResponse.title}</Link>
-                                <p className="line-clamp-1 text-sm text-muted-foreground">{item.queryText}</p>
-                                <div className="flex flex-wrap items-center gap-2">
-                                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground"><Clock className="h-3 w-3" /> {item.timestamp.toLocaleDateString()}</span>
-                                    {item.isBookmarked && <Badge variant="secondary" className="gap-1.5 pl-1.5"><BookMarked className="h-3 w-3" /> Bookmarked</Badge>}
-                                    {item.aiResponse.tags?.slice(0, 3).map(tag => <Badge key={tag} variant="outline">{tag}</Badge>)}
+                    ) : filteredHistory.length > 0 ? (
+                        <>
+                            {filteredHistory.map(item => (
+                                <ResearchHistoryItem key={item.researchId} item={item} />
+                            ))}
+                            {hasMore && (
+                                <div className="pt-4 text-center">
+                                    <Button onClick={loadMore} disabled={loading}>
+                                        {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : 'Load More'}
+                                    </Button>
                                 </div>
-                            </div>
-                            <Button variant="ghost" size="icon" asChild>
-                                <Link href={`/result/${item.researchId}`}>
-                                    <ArrowRight className="h-4 w-4" />
-                                </Link>
-                            </Button>
-                        </div>
-                    )) : (
+                            )}
+                        </>
+                    )
+                    : (
                         <p className="text-center text-muted-foreground py-8">No research found.</p>
                     )}
                 </div>
@@ -245,5 +264,3 @@ export default function ProfilePage() {
         </div>
     )
 }
-
-    

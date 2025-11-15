@@ -67,10 +67,10 @@ async function extractGitHubContent(url: string): Promise<string> {
     let readmeUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/README.md`;
     let response;
     try {
-        response = await axios.get(readmeUrl, { timeout: 10000 });
+        response = await axios.get(readmeUrl, { timeout: 5000 });
     } catch (e) {
         readmeUrl = `https://raw.githubusercontent.com/${owner}/${repo}/master/README.md`;
-        response = await axios.get(readmeUrl, { timeout: 10000 });
+        response = await axios.get(readmeUrl, { timeout: 5000 });
     }
     
     return `GitHub Repository: ${owner}/${repo}\n\n${response.data}`;
@@ -86,7 +86,7 @@ async function extractPDFContent(url: string): Promise<string> {
 async function extractWebContent(url: string): Promise<string> {
   try {
     const response = await axios.get(url, {
-      timeout: 10000,
+      timeout: 5000,
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
       },

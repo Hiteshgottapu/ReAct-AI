@@ -49,11 +49,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   }
   
   if (loading || !user) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <Loading />;
   }
   
   return (
@@ -137,4 +133,12 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       </SidebarProvider>
     </ResearchHistoryProvider>
   )
+}
+
+function Loading() {
+  return (
+    <div className="flex h-screen items-center justify-center bg-background">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+    </div>
+  );
 }

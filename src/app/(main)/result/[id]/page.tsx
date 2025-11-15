@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useParams } from "next/navigation"
@@ -106,6 +107,7 @@ export default function ResultPage() {
     navigator.clipboard.writeText(text);
     toast({
       title: "Copied to clipboard!",
+      description: "The summary has been copied as Markdown."
     });
   };
   
@@ -183,20 +185,23 @@ export default function ResultPage() {
     toast({ title: "Downloading PDF..." });
   };
 
-  const fullText = `
-Title: ${result.aiResponse.title}
+  const markdownText = `
+# ${result.aiResponse.title}
 
-Introduction:
+**Date:** ${result.timestamp.toLocaleString()}
+**Query:** "${result.queryText}"
+
+## Introduction
 ${result.aiResponse.introduction}
 
-Key Insights:
+## Key Insights
 ${result.aiResponse.keyInsights.map(insight => `- ${insight}`).join('\n')}
 
-Conclusion:
+## Conclusion
 ${result.aiResponse.conclusion}
 
-Sources:
-${result.aiResponse.sources?.map(source => `- ${source.title}: ${source.url}`).join('\n') || 'N/A'}
+## Sources
+${result.aiResponse.sources?.map(source => `- [${source.title || source.url}](${source.url})`).join('\n') || 'N/A'}
   `.trim();
 
   return (
@@ -223,7 +228,7 @@ ${result.aiResponse.sources?.map(source => `- ${source.title}: ${source.url}`).j
                     <BookMarked className="mr-2 h-4 w-4" />
                     {result.isBookmarked ? "Bookmarked" : "Bookmark"}
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => copyToClipboard(fullText)}>
+                <Button variant="outline" size="sm" onClick={() => copyToClipboard(markdownText)}>
                     <Clipboard className="mr-2 h-4 w-4" />
                     Copy
                 </Button>
@@ -332,3 +337,5 @@ ${result.aiResponse.sources?.map(source => `- ${source.title}: ${source.url}`).j
     </div>
   )
 }
+
+    

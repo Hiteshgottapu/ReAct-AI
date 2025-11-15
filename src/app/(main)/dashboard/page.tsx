@@ -16,8 +16,9 @@ import {
 import { ResearchForm } from "@/components/research/research-form";
 import { Badge } from "@/components/ui/badge";
 import { useResearchHistory } from "@/hooks/use-research-history";
+import { ResearchHistoryProvider } from "@/components/research-history-provider";
 
-export default function DashboardPage() {
+function DashboardContent() {
   const { researchHistory, loading } = useResearchHistory();
   const recentResearch = researchHistory.slice(0, 3);
 
@@ -102,4 +103,12 @@ export default function DashboardPage() {
       </aside>
     </div>
   );
+}
+
+export default function DashboardPage() {
+    return (
+        <ResearchHistoryProvider>
+            <DashboardContent />
+        </ResearchHistoryProvider>
+    )
 }

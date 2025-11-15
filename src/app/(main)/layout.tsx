@@ -21,6 +21,7 @@ import {
 import { UserNav } from "@/components/layout/user-nav"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Footer } from "@/components/layout/footer"
+import { Button } from "@/components/ui/button"
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -48,6 +49,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     if (path === "/dashboard") return "Dashboard";
     if (path.startsWith("/result")) return "Research Result";
     if (path.startsWith("/bookmarks")) return "Bookmarks";
+    if (path.startsWith("/profile")) return "Profile";
+    if (path.startsWith("/settings")) return "Settings";
     const segment = path.split('/')[1];
     return segment.charAt(0).toUpperCase() + segment.slice(1);
   }
@@ -68,7 +71,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                  <Link href="/" className="flex items-center gap-2">
                     <BrainCircuit className="h-6 w-6 text-primary" />
                     <h1 className="text-lg font-bold">
-                        ReAct-AI
+                        Contextual Insights
                     </h1>
                 </Link>
                 <div className="flex items-center gap-4">
@@ -95,7 +98,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 <div className="flex items-center gap-2 p-2">
                     <BrainCircuit className="h-6 w-6 text-primary" />
                     <h1 className="text-lg font-bold group-data-[collapsible=icon]:hidden">
-                        ReAct-AI
+                        Contextual Insights
                     </h1>
                 </div>
               </SidebarHeader>
@@ -162,5 +165,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     )
   }
 
+  // Fallback for non-landing pages when user is not logged in but not yet redirected.
+  // Or any other edge case.
   return <main>{children}</main>;
 }

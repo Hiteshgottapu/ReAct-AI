@@ -6,6 +6,8 @@ import Link from "next/link"
 import { ArrowRight, BookMarked, Clock, Edit, Save, Search, Loader2, Upload } from "lucide-react"
 import { updateProfile } from "firebase/auth"
 import React from 'react'
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
+import { auth, storage } from "@/lib/firebase"
 
 import { useAuth } from "@/hooks/use-auth"
 import { useToast } from "@/hooks/use-toast"
@@ -30,6 +32,7 @@ function ProfileForm() {
 
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
 
     const handleSave = async () => {
         if (!user) return;
@@ -56,16 +59,31 @@ function ProfileForm() {
         setIsEditing(false);
     }
 
-    const handleAvatarUpload = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            // In a real app, you would upload this file to Firebase Storage
-            // and get a URL to update the user's profile.
-            console.log("Selected file:", file.name);
+    const handleAvatarUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+        if (!user) return;
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setIsUploading(true);
+        const storageRef = ref(storage, `avatars/${user.uid}`);
+
+        try {
+            await uploadBytes(storageRef, file);
+            const photoURL = await getDownloadURL(storageRef);
+            await updateProfile(user, { photoURL });
+
             toast({
-                title: "Avatar Upload",
-                description: "File upload UI is ready. Backend logic needs to be implemented.",
+                title: "Avatar updated!",
+                description: "Your new profile picture has been saved.",
             });
+        } catch (error: any) {
+            toast({
+                variant: "destructive",
+                title: "Upload failed",
+                description: error.message || "Could not upload your avatar.",
+            });
+        } finally {
+            setIsUploading(false);
         }
     };
 
@@ -100,10 +118,14 @@ function ProfileForm() {
                                 htmlFor="avatar-upload"
                                 className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black/60 opacity-0 transition-opacity group-hover:opacity-100"
                             >
-                                <Upload className="h-6 w-6 text-white" />
+                                {isUploading ? (
+                                    <Loader2 className="h-6 w-6 text-white animate-spin" />
+                                ) : (
+                                    <Upload className="h-6 w-6 text-white" />
+                                )}
                                 <span className="sr-only">Upload new avatar</span>
                             </label>
-                            <input id="avatar-upload" type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} />
+                            <input id="avatar-upload" type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isUploading} />
                         </div>
                         <div className="space-y-1">
                             <h3 className="text-xl font-semibold">{displayName}</h3>

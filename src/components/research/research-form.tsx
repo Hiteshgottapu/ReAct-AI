@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -30,6 +31,7 @@ import { useRouter } from "next/navigation"
 import type { ResearchResult } from "@/lib/types"
 import { useResearchHistory } from "@/hooks/use-research-history"
 import { useAuth } from "@/hooks/use-auth"
+import { Separator } from "../ui/separator"
 
 const researchSchema = z.object({
   queryText: z.string().min(10, "Please enter a more detailed research topic."),
@@ -114,13 +116,13 @@ export function ResearchForm() {
   }
 
   return (
-    <Card className="bg-accent border-border">
+    <Card className="bg-surface border-standard">
       <CardHeader>
-        <CardTitle className="flex items-center gap-3 text-2xl">
-          <FileText className="h-6 w-6" />
+        <CardTitle className="flex items-center gap-3 text-2xl text-heading">
+          <FileText className="h-6 w-6 text-primary" />
           Start New Research
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-body">
           Enter your topic and any relevant links to begin.
         </CardDescription>
       </CardHeader>
@@ -132,7 +134,7 @@ export function ResearchForm() {
               name="queryText"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">Research Topic</FormLabel>
+                  <FormLabel className="text-base font-semibold text-heading">Research Topic</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="e.g., The future of renewable energy sources and their impact on global economies..."
@@ -144,11 +146,15 @@ export function ResearchForm() {
                 </FormItem>
               )}
             />
+            
+            <Separator className="bg-standard" />
 
             <div className="space-y-4">
-              <FormLabel className="text-base font-semibold">Reference Links (Optional)</FormLabel>
-              <p className="text-sm text-muted-foreground">Provide URLs for the AI to use as context.</p>
-              <div className="mt-2 space-y-3">
+              <div>
+                <FormLabel className="text-base font-semibold text-heading">Reference Links</FormLabel>
+                <p className="text-sm text-muted mt-1">Provide URLs for the AI to use as context (optional).</p>
+              </div>
+              <div className="space-y-4">
                 {fields.map((field, index) => (
                   <FormField
                     key={field.id}
@@ -169,9 +175,8 @@ export function ResearchForm() {
                             size="icon"
                             onClick={() => remove(index)}
                             disabled={fields.length <= 1}
-                            className="text-muted-foreground hover:text-destructive"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4 text-muted hover:text-error" />
                           </Button>
                         </div>
                         <FormMessage />
@@ -184,12 +189,14 @@ export function ResearchForm() {
                 type="button"
                 variant="outline"
                 size="sm"
-                className="mt-2"
+                className="mt-2 text-primary border-primary hover:bg-primary hover:text-primary-foreground"
                 onClick={() => append({ value: "" })}
               >
                 <Plus className="mr-2 h-4 w-4" /> Add Another Link
               </Button>
             </div>
+            
+            <Separator className="bg-standard"/>
 
             <Button type="submit" disabled={isLoading} size="lg" className="w-full text-base font-bold">
               {isLoading ? (

@@ -5,7 +5,7 @@ import { useState } from "react"
 import { useForm, useFieldArray } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { Loader2, Plus, Trash2, FileText, Sparkles } from "lucide-react"
+import { Loader2, Plus, Sparkles, Trash2, Wand2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -34,7 +34,7 @@ import { useAuth } from "@/hooks/use-auth"
 import { Separator } from "../ui/separator"
 
 const researchSchema = z.object({
-  queryText: z.string().min(10, "Please enter a more detailed research topic."),
+  queryText: z.string().min(10, "Please describe your research topic in a bit more detail."),
   inputLinks: z.array(
     z.object({
       value: z.string().url({ message: "Please enter a valid URL." }).or(z.literal("")),
@@ -94,8 +94,8 @@ export function ResearchForm() {
 
       if (newResearchId) {
         toast({
-          title: "Research Generated!",
-          description: `Redirecting to summary: "${result.title}"`,
+          title: "Research Complete!",
+          description: `Your summary is ready.`,
         })
 
         form.reset();
@@ -116,14 +116,14 @@ export function ResearchForm() {
   }
 
   return (
-    <Card className="bg-surface border-standard">
+    <Card className="bg-card border border-border/50">
       <CardHeader>
-        <CardTitle className="flex items-center gap-3 text-2xl text-heading">
-          <FileText className="h-6 w-6 text-primary" />
-          Start New Research
+        <CardTitle className="flex items-center gap-3 text-2xl font-bold">
+          <Wand2 className="h-6 w-6 text-primary" />
+          What are you researching today?
         </CardTitle>
-        <CardDescription className="text-body">
-          Enter your topic and any relevant links to begin.
+        <CardDescription className="text-muted-foreground">
+          I can analyze articles, YouTube videos, and more. Just give me a topic and some links.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -134,11 +134,11 @@ export function ResearchForm() {
               name="queryText"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold text-heading">Research Topic</FormLabel>
+                  <FormLabel className="text-base font-semibold text-foreground">Tell me your research topic</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="e.g., The future of renewable energy sources and their impact on global economies..."
-                      className="min-h-[120px]"
+                      placeholder="For example: What are the latest advancements in quantum computing and their potential impact on cryptography?"
+                      className="min-h-[120px] bg-background border-border"
                       {...field}
                     />
                   </FormControl>
@@ -147,12 +147,12 @@ export function ResearchForm() {
               )}
             />
             
-            <Separator className="bg-standard" />
+            <Separator />
 
             <div className="space-y-4">
               <div>
-                <FormLabel className="text-base font-semibold text-heading">Reference Links</FormLabel>
-                <p className="text-sm text-muted mt-1">Provide URLs for the AI to use as context (optional).</p>
+                <FormLabel className="text-base font-semibold text-foreground">Do you have any links for me to read?</FormLabel>
+                <p className="text-sm text-muted-foreground mt-1">I can process websites, YouTube videos, and GitHub repos (optional).</p>
               </div>
               <div className="space-y-4">
                 {fields.map((field, index) => (
@@ -166,6 +166,7 @@ export function ResearchForm() {
                           <FormControl>
                             <Input
                               placeholder="https://example.com"
+                              className="bg-background border-border"
                               {...field}
                             />
                           </FormControl>
@@ -174,9 +175,9 @@ export function ResearchForm() {
                             variant="ghost"
                             size="icon"
                             onClick={() => remove(index)}
-                            disabled={fields.length <= 1}
+                            disabled={fields.length <= 1 && form.getValues('inputLinks.0.value') === ''}
                           >
-                            <Trash2 className="h-4 w-4 text-muted hover:text-error" />
+                            <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
                           </Button>
                         </div>
                         <FormMessage />
@@ -189,16 +190,16 @@ export function ResearchForm() {
                 type="button"
                 variant="outline"
                 size="sm"
-                className="mt-2 text-primary border-primary hover:bg-primary hover:text-primary-foreground"
+                className="mt-2"
                 onClick={() => append({ value: "" })}
               >
                 <Plus className="mr-2 h-4 w-4" /> Add Another Link
               </Button>
             </div>
             
-            <Separator className="bg-standard"/>
+            <Separator/>
 
-            <Button type="submit" disabled={isLoading} size="lg" className="w-full text-base font-bold">
+            <Button type="submit" disabled={isLoading} size="lg" className="w-full font-bold">
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -207,7 +208,7 @@ export function ResearchForm() {
               ) : (
                 <>
                   <Sparkles className="mr-2 h-5 w-5" />
-                  Generate Insights
+                  Start Research
                 </>
               )}
             </Button>

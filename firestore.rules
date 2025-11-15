@@ -1,9 +1,19 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Helper function to check for authenticated users
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    match /users/{userId}/{document=**} {
+      // Users can only access their own documents
+      allow read, write: if isAuthenticated() && request.auth.uid == userId;
+    }
+
     match /users/{userId}/researchHistory/{researchId} {
-      allow get, create, update, delete: if request.auth != null && request.auth.uid == userId;
-      allow list: if request.auth != null && request.auth.uid == userId;
+      // Allow list operations for a user's own research history
+      allow list: if isAuthenticated() && request.auth.uid == userId;
     }
   }
 }

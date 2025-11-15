@@ -169,76 +169,75 @@ ${result.aiResponse.sources?.map(source => `- ${source.title}: ${source.url}`).j
 
       <main className="space-y-8">
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MessageSquareQuote className="h-6 w-6 text-accent" />
-              Introduction
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="leading-relaxed">{result.aiResponse.introduction}</p>
-          </CardContent>
-        </Card>
+          <CardContent className="space-y-12">
+            {/* Introduction */}
+            <section className="space-y-4">
+              <h2 className="flex items-center gap-3 text-2xl font-bold text-foreground">
+                <MessageSquareQuote className="h-6 w-6 text-accent" />
+                Introduction
+              </h2>
+              <p className="leading-relaxed text-muted-foreground">{result.aiResponse.introduction}</p>
+            </section>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Lightbulb className="h-6 w-6 text-accent" />
-              Key Insights
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-4">
-              {result.aiResponse.keyInsights.map((insight, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <span className="mt-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-bold">
-                    {index + 1}
-                  </span>
-                  <p className="flex-1 pt-0.5 text-base">{insight}</p>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+            <Separator />
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Target className="h-6 w-6 text-accent" />
-              Conclusion
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="leading-relaxed">{result.aiResponse.conclusion}</p>
-          </CardContent>
-        </Card>
-
-        {result.aiResponse.sources && result.aiResponse.sources.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <LinkIcon className="h-6 w-6 text-accent" />
-                Sources
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2">
-                {result.aiResponse.sources.map((source, index) => (
-                  <li key={index}>
-                    <a
-                      href={source.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline"
-                    >
-                      {source.title || source.url}
-                    </a>
+            {/* Key Insights */}
+            <section className="space-y-6">
+              <h2 className="flex items-center gap-3 text-2xl font-bold text-foreground">
+                <Lightbulb className="h-6 w-6 text-accent" />
+                Key Insights
+              </h2>
+              <ul className="space-y-4">
+                {result.aiResponse.keyInsights.map((insight, index) => (
+                  <li key={index} className="flex items-start gap-4 rounded-lg bg-accent/50 p-4">
+                    <span className="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary text-lg font-bold text-primary-foreground">
+                      {index + 1}
+                    </span>
+                    <p className="flex-1 text-base text-foreground/90">{insight}</p>
                   </li>
                 ))}
               </ul>
-            </CardContent>
-          </Card>
-        )}
+            </section>
+
+            <Separator />
+
+            {/* Conclusion */}
+            <section className="space-y-4">
+              <h2 className="flex items-center gap-3 text-2xl font-bold text-foreground">
+                <Target className="h-6 w-6 text-accent" />
+                Conclusion
+              </h2>
+              <p className="leading-relaxed text-muted-foreground">{result.aiResponse.conclusion}</p>
+            </section>
+
+            {/* Sources */}
+            {result.aiResponse.sources && result.aiResponse.sources.length > 0 && (
+              <>
+                <Separator />
+                <section className="space-y-4">
+                  <h2 className="flex items-center gap-3 text-2xl font-bold text-foreground">
+                    <LinkIcon className="h-6 w-6 text-accent" />
+                    Sources
+                  </h2>
+                  <ul className="space-y-2">
+                    {result.aiResponse.sources.map((source, index) => (
+                      <li key={index} className="truncate">
+                        <a
+                          href={source.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary underline-offset-4 hover:underline"
+                        >
+                          {source.title || source.url}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              </>
+            )}
+          </CardContent>
+        </Card>
       </main>
 
       <Separator />

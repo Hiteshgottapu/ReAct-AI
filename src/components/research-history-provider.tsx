@@ -19,8 +19,10 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 import { useAuth } from '@/hooks/use-auth';
-import { auth, db } from '@/lib/firebase';
+import { db } from '@/lib/firebase';
 import type { ResearchResult } from '@/lib/types';
+import { errorEmitter } from '@/lib/error-emitter';
+import { FirestorePermissionError } from '@/lib/errors';
 
 // --- E2EE Simulation ---
 // In a real application, use a robust library like tweetnacl-js or libsodium.js.
@@ -106,8 +108,9 @@ export function ResearchHistoryProvider({ children }: { children: ReactNode }) {
     }
 
     setLoading(true);
+    const researchHistoryRef = collection(db, 'users', user.uid, 'researchHistory');
     const q = query(
-      collection(db, 'users', user.uid, 'researchHistory'),
+      researchHistoryRef,
       orderBy('timestamp', 'desc')
     );
 
@@ -127,7 +130,11 @@ export function ResearchHistoryProvider({ children }: { children: ReactNode }) {
         setLoading(false);
       },
       (error) => {
-        console.error('Error fetching research history:', error);
+        const permissionError = new FirestorePermissionError({
+          path: researchHistoryRef.path,
+          operation: 'list',
+        });
+        errorEmitter.emit('permission-error', permissionError);
         setLoading(false);
       }
     );
@@ -142,17 +149,26 @@ export function ResearchHistoryProvider({ children }: { children: ReactNode }) {
       if (!user) return null;
 
       const encryptedAiResponse = encryptAiResponse(resultData.aiResponse);
+      const collectionRef = collection(db, 'users', user.uid, 'researchHistory');
+      const dataToSave = {
+        ...resultData,
+        aiResponse: encryptedAiResponse,
+        userId: user.uid,
+        timestamp: serverTimestamp(),
+      };
 
       try {
-        const docRef = await addDoc(
-          collection(db, 'users', user.uid, 'researchHistory'),
-          {
-            ...resultData,
-            aiResponse: encryptedAiResponse,
-            userId: user.uid,
-            timestamp: serverTimestamp(),
-          }
-        );
+        const docRef = await addDoc(collectionRef, dataToSave)
+          .catch(serverError => {
+            const permissionError = new FirestorePermissionError({
+              path: collectionRef.path,
+              operation: 'create',
+              requestResourceData: dataToSave,
+            });
+            errorEmitter.emit('permission-error', permissionError);
+            // Re-throw to be caught by outer try/catch
+            throw serverError;
+          });
         return docRef.id;
       } catch (error) {
         console.error('Error adding document: ', error);
@@ -176,7 +192,16 @@ export function ResearchHistoryProvider({ children }: { children: ReactNode }) {
         (item) => item.researchId === researchId
       );
       if (currentDoc) {
-        await updateDoc(docRef, { isBookmarked: !currentDoc.isBookmarked });
+        const updatedData = { isBookmarked: !currentDoc.isBookmarked };
+        updateDoc(docRef, updatedData)
+          .catch(serverError => {
+            const permissionError = new FirestorePermissionError({
+              path: docRef.path,
+              operation: 'update',
+              requestResourceData: updatedData,
+            });
+            errorEmitter.emit('permission-error', permissionError);
+          });
       }
     },
     [user, researchHistory]
@@ -192,7 +217,16 @@ export function ResearchHistoryProvider({ children }: { children: ReactNode }) {
         'researchHistory',
         researchId
       );
-      await updateDoc(docRef, { feedbackScore });
+      const updatedData = { feedbackScore };
+      updateDoc(docRef, updatedData)
+        .catch(serverError => {
+          const permissionError = new FirestorePermissionError({
+            path: docRef.path,
+            operation: 'update',
+            requestResourceData: updatedData,
+          });
+          errorEmitter.emit('permission-error', permissionError);
+        });
     },
     [user]
   );

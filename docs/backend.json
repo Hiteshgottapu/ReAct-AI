@@ -1,0 +1,103 @@
+{
+  "entities": {
+    "user": {
+      "title": "User",
+      "description": "A user of the application.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The user's unique ID."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The user's email address."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The user's display name."
+        },
+        "photoURL": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the user's profile picture."
+        }
+      },
+      "required": ["uid", "email"]
+    },
+    "researchResult": {
+      "title": "Research Result",
+      "description": "A single research result generated for a user.",
+      "type": "object",
+      "properties": {
+        "researchId": {
+          "type": "string",
+          "description": "The unique ID for the research result."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who initiated the research."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the research was created."
+        },
+        "queryText": {
+          "type": "string",
+          "description": "The original query text from the user."
+        },
+        "inputLinks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          },
+          "description": "Links provided by the user for context."
+        },
+        "aiResponse": {
+          "type": "object",
+          "description": "The structured response from the AI.",
+          "properties": {
+            "title": { "type": "string" },
+            "introduction": { "type": "string" },
+            "keyInsights": { "type": "array", "items": { "type": "string" } },
+            "conclusion": { "type": "string" },
+            "sources": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "url": { "type": "string" },
+                  "title": { "type": "string" }
+                }
+              }
+            },
+            "tags": { "type": "array", "items": { "type": "string" } },
+            "disclaimer": { "type": "string" }
+          },
+           "required": ["title", "introduction", "keyInsights", "conclusion", "tags"]
+        },
+        "isBookmarked": {
+          "type": "boolean",
+          "description": "Whether the user has bookmarked this result."
+        },
+        "feedbackScore": {
+          "type": "number",
+          "description": "A 1-5 star rating from the user."
+        }
+      },
+      "required": ["researchId", "userId", "timestamp", "queryText", "aiResponse", "isBookmarked"]
+    }
+  },
+  "auth": {
+    "providers": ["google.com", "password"]
+  },
+  "firestore": {
+    "/users/{userId}/researchHistory/{researchId}": {
+      "schema": { "$ref": "#/entities/researchResult" },
+      "description": "Stores the research history for each user."
+    }
+  }
+}

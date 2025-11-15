@@ -82,7 +82,10 @@ async function extractGitHubContent(url: string): Promise<string> {
 }
 
 async function extractPDFContent(url: string): Promise<string> {
-  return `PDF content extraction from ${url} (requires backend processing)`;
+  // PDF extraction is a complex server-side task.
+  // This is a placeholder for a more robust implementation.
+  // For now, we'll indicate that it's a PDF and let the AI know.
+  return `Content from PDF at ${url}. PDF content extraction is not fully implemented.`;
 }
 
 // Fast extraction for static sites (Cheerio)
@@ -123,17 +126,18 @@ async function extractStaticContent(url: string): Promise<string> {
 
 // Slow but thorough extraction for SPAs (Puppeteer)
 async function extractDynamicContent(url: string): Promise<string> {
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu',
-    ],
-  });
-  
+  let browser;
   try {
+    browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+      ],
+    });
+  
     const page = await browser.newPage();
     
     await page.setRequestInterception(true);
@@ -153,7 +157,8 @@ async function extractDynamicContent(url: string): Promise<string> {
       timeout: 15000,
     });
     
-    await page.waitForTimeout(2000);
+    // Additional wait for any lazy-loaded content
+    await new Promise(resolve => setTimeout(resolve, 2000));
     
     const content = await page.evaluate(() => {
       const unwanted = document.querySelectorAll('script, style, nav, footer, header, .ad, .advertisement');
@@ -176,7 +181,9 @@ async function extractDynamicContent(url: string): Promise<string> {
     return content.replace(/\s+/g, ' ').trim().slice(0, 50000);
     
   } catch (error) {
-    await browser.close();
+    if (browser) {
+      await browser.close();
+    }
     throw error;
   }
 }
@@ -186,12 +193,14 @@ async function extractWebContent(url: string): Promise<string> {
   try {
     const staticContent = await extractStaticContent(url);
     
+    // If static extraction is successful, return the content
     if (staticContent && staticContent.length > 200) {
-      console.log('Static extraction succeeded:', url);
-      return staticContent.slice(0, 50000);
+      console.log('✓ Static extraction succeeded:', url);
+      return staticContent.slice(0, 50000); // Limit content size
     }
     
-    console.warn('Static extraction failed or produced minimal content, trying headless browser:', url);
+    // If static extraction fails or content is minimal, fall back to dynamic extraction
+    console.warn('⚠ Static extraction insufficient, trying headless browser:', url);
     return await extractDynamicContent(url);
     
   } catch (error: any) {

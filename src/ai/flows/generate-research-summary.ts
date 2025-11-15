@@ -89,6 +89,7 @@ const generateResearchSummaryPrompt = ai.definePrompt({
   - If the content is a transcript, summarize the key points of the discussion.
   - If the content is from a webpage or article, synthesize the main arguments and findings.
   - If the content is from a GitHub repository, describe the project's purpose and key features based on the README.
+  - If you encounter a source with a 'Failed to extract content' message, acknowledge that the source could not be processed in your summary and move on.
   - Ensure the keyInsights array contains between 3 and 7 bullet points.
   - The 'tags' field should contain 3-5 relevant keywords.
   - Always include the disclaimer.
@@ -111,11 +112,11 @@ const generateResearchSummaryFlow = ai.defineFlow(
           extractedContent.push({ url, type, content });
         } catch (error) {
           console.warn(`Could not process URL ${url}:`, error);
-          // Optionally, you could pass this error to the prompt
+          // Pass the error to the prompt instead of halting the process
           extractedContent.push({
             url,
             type: 'error',
-            content: `Failed to extract content. ${error instanceof Error ? error.message : ''}`,
+            content: `Failed to extract content. ${error instanceof Error ? error.message : 'An unknown error occurred.'}`,
           });
         }
       }

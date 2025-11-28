@@ -136,10 +136,6 @@ Generate a summary including:
 
 ---
 
-## 📚 License
-
-MIT — feel free to use, extend, or improve.
-
 ---
 
 ## 👨‍💻 Author
@@ -151,5 +147,3 @@ MIT — feel free to use, extend, or improve.
 💻 [GitHub](https://github.com/Hiteshgottapu)
 
 ---
-
-**💡 Tip:** Add this to your resume as a flagship GenAI project. This shows end-to-end skill from model orchestration to deployment.
